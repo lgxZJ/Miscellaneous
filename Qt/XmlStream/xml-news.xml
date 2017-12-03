@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE note [
+  <!ELEMENT note (to,from,heading,body)>
+  <!ELEMENT to      (#PCDATA)>
+  <!ELEMENT from    (#PCDATA)>
+  <!ELEMENT heading (#PCDATA)>
+  <!ELEMENT body    (#PCDATA)>
+]>
+
+<?xml-stylesheet type="text/css" href="tutorials.css"?>
+<CDATA><![CDATA[ This is a CDATA section text! ]]><CDATA>
+<!-- This is a comment text! -->
+
+<nitf>
+
+<head>
+<title>Colombia Earthquake</title>
+</head>
+
+<body>
+
+<headline>
+  <hl1>143 Dead in Colombia Earthquake</hl1>
+</headline>
+<byline>
+  <bytag>By Jared Kotler, Associated Press Writer</bytag>
+</byline>
+<dateline>
+  <location>Bogota, Colombia</location>
+  <date>Monday January 25 1999 7:28 ET</date>
+</dateline>
+
+</body>
+
+</nitf>

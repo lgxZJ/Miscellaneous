@@ -1,0 +1,7 @@
+<RCC>
+    <qresource prefix="/">
+        <file>right-arrow.png</file>
+        <file>checked-icon.png</file>
+        <file>drag-icon.png</file>
+    </qresource>
+</RCC>

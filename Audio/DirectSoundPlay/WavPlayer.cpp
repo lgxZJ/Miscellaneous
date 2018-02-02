@@ -50,9 +50,16 @@ void WavPlayer::cleanResources()
 
 	if (m_notifyCount > 0) {
 		for (unsigned i = 0; i < m_notifyCount; ++i)
-			CloseHandle(m_notifyHandles[i]);
-		free(m_notifyHandles);
-		free(m_notifyOffsets);
+			if (m_notifyHandles != nullptr && m_notifyHandles[i] != nullptr)
+				CloseHandle(m_notifyHandles[i]);
+
+		if (m_notifyHandles != nullptr)
+			free(m_notifyHandles),
+			m_notifyHandles = nullptr;
+		if (m_notifyOffsets != nullptr)
+			free(m_notifyOffsets),
+			m_notifyOffsets = nullptr;
+
 		m_notifyCount = 0;
 	}
 	m_additionalEndNotify = false;
@@ -214,7 +221,6 @@ void WavPlayer::startDataFillingThread()
 		throw std::exception("malloc error");
 	m_notifyOffsets = static_cast<DWORD*>(malloc(sizeof(DWORD)* (m_notifyCount)));
 	if (m_notifyHandles == nullptr) {
-		free(m_notifyHandles);
 		throw std::exception("malloc error");
 	}
 

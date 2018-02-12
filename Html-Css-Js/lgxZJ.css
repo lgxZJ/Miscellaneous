@@ -1,0 +1,30 @@
+body {
+    margin: 2px 2px 2px 2px;
+}
+
+p {
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 200%;
+
+    font-weight: bold;
+    font-style: italic;
+    
+    margin: 0px 0px 0px 0px;
+
+    border:2px groove rgb(20, 126, 168);
+    text-align: center;
+
+    color: rgb(50, 50, 50);
+
+    /*background-color: blue;*/
+}
+
+div#blog-tabs > a > div {
+    border: 1px solid green;
+
+    width: 16vw;
+    height: 8vh;
+    background-color: blueviolet;
+}
+
+

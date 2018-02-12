@@ -46,8 +46,8 @@ private:
     inline bool fileSet() const    { return m_directSound8 != nullptr; }
 
 	static DWORD WINAPI dataFillingThread(LPVOID param);
-	static bool WINAPI waitToFillHalfBuffer(WavPlayer* wavPlayer, unsigned bufferSliceIndex);
-	static void WINAPI lockAndFillData(WavPlayer* wavPlayer, char* dataPtr, DWORD dataSizeInBytes);
+	static bool WINAPI	tryToFillNextBuffer(WavPlayer* wavPlayer, unsigned bufferSliceIndex);
+	static void WINAPI	lockAndFillData(WavPlayer* wavPlayer, char* dataPtr, DWORD dataSizeInBytes);
 
 private:
     WavFile         m_wavFile;
@@ -61,6 +61,10 @@ private:
     unsigned        m_secondaryBufferSize;
     char*           m_nextDataToPlay;
 
+	//	the notifies include:
+	//		1) ends notify, 
+	//		2) data filling notify, 
+	//		3) exit notify
 	unsigned		m_notifyCount;
 	HANDLE*			m_notifyHandles;
 	DWORD*			m_notifyOffsets;

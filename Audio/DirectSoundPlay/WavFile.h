@@ -14,9 +14,12 @@ public:
     void open(std::wstring filename);
     void clean();
 
+	//	WARNING:
+	//		These functions must be called after `open()`.
     WAVEFORMATEX&	getWaveFormat()         { return m_waveFormat; }
     void*           getAudioData() const    { return m_data; }
 	DWORD			getAudioSize() const	{ return m_dataSize; }
+	unsigned		getAudioTime() const	{ return m_dataSize / m_waveFormat.nAvgBytesPerSec; }
 	char*			getDataEndPtr() const   { return (char*)m_data + m_dataSize; }
 
 private:

@@ -26,27 +26,34 @@ WavPlayer::WavPlayer()
 
 WavPlayer::~WavPlayer()
 {
+	if (SetEvent(m_notifyHandles[m_notifyCount - 1]) != 0) {
+		//todo:	do log
+	}
     cleanResources();
 }
 
 void WavPlayer::cleanResources()
 {
-	//	no need to release secondary buffer, device object do it
-	if (m_directSound8 != nullptr)
-		m_directSound8->Release(),
-		m_directSound8 = nullptr;
-
+	//	must call IDirectSound::Stop(), or the data filling thread will not be notified
+	if (isPlaying())		
+		stop();
     m_wavFile.clean();
 
 	if (m_threadHandle != NULL) {
 		m_quitDataFillingThread = true;
 		if (WaitForSingleObject(m_threadHandle, INFINITE) != WAIT_OBJECT_0)
 			throw std::exception("WaitForSingleObject error");
+
 		CloseHandle(m_threadHandle);
 		m_threadHandle = NULL;
 		m_quitDataFillingThread = false;
 	}
 	m_dataFillingEnds = false;
+
+	//	no need to release secondary buffer, device object do it
+	if (m_directSound8 != nullptr)
+		m_directSound8->Release(),
+		m_directSound8 = nullptr;
 
 	if (m_notifyCount > 0) {
 		for (unsigned i = 0; i < m_notifyCount; ++i)
@@ -156,8 +163,8 @@ void WavPlayer::createBufferOfSeconds(unsigned seconds)
 
 void WavPlayer::fillDataIntoBuffer()
 {
-	m_nextDataToPlay = static_cast<char*>(m_wavFile.getAudioData());
-	return;
+	//m_nextDataToPlay = static_cast<char*>(m_wavFile.getAudioData());
+	//return;
 	Q_ASSERT(m_bufferSliceCount > 1);
 
     //  fill half buffer to signal the notify event to do next data filling
@@ -214,15 +221,16 @@ void WavPlayer::startDataFillingThread()
 				additionalNotifyIndex = i;
 				break;
 			}
-
-
+	
+	//	add a stop notify count at the end of entire notifies to make the data filling
+	//	thread exit gracefully
+	++m_notifyCount;
 	m_notifyHandles = static_cast<HANDLE*>(malloc(sizeof(HANDLE)* (m_notifyCount)));
 	if (m_notifyHandles == nullptr)
 		throw std::exception("malloc error");
 	m_notifyOffsets = static_cast<DWORD*>(malloc(sizeof(DWORD)* (m_notifyCount)));
-	if (m_notifyHandles == nullptr) {
+	if (m_notifyHandles == nullptr)
 		throw std::exception("malloc error");
-	}
 
 	for (unsigned i = 0; i < m_notifyCount; ++i) {
 		m_notifyHandles[i] = CreateEvent(NULL, FALSE, FALSE, NULL);
@@ -233,6 +241,9 @@ void WavPlayer::startDataFillingThread()
 			//	set buffer end notify
 			m_notifyOffsets[i] = bufferEndOffset;
 			m_endNotifyHandle = m_notifyHandles[i];
+		}
+		else if (i == m_notifyCount - 1) {
+			//	do nothing
 		} else {
 			//	NOTE:	the entire buffer size must can be devided by this `notifyCount`,
 			//	or it will lost some bytes when filling data into the buffer. since the end
@@ -244,7 +255,8 @@ void WavPlayer::startDataFillingThread()
 				m_endNotifyHandle = m_notifyHandles[i];
 		}
 	}
-	setNotifyEvent(m_notifyHandles, m_notifyOffsets, m_notifyCount);
+	//	skip the exit notify which we toggle explicitly
+	setNotifyEvent(m_notifyHandles, m_notifyOffsets, m_notifyCount - 1);
 
 	if ((m_threadHandle = CreateThread(NULL, NULL, &dataFillingThread, this, 0, NULL))
 			== NULL) {
@@ -286,19 +298,26 @@ DWORD WINAPI WavPlayer::dataFillingThread(LPVOID param)
 
 	while (!wavPlayer->m_quitDataFillingThread) {
 		try {
-			for (unsigned i = 0; i < wavPlayer->m_notifyCount; ++i) {
-				if (waitToFillHalfBuffer(wavPlayer, i) == false) {
-					wavPlayer->stop();
+			DWORD notifyIndex = WaitForMultipleObjects(wavPlayer->m_notifyCount, wavPlayer->m_notifyHandles, FALSE, INFINITE);
+			if (!(notifyIndex >= WAIT_OBJECT_0 &&
+				  notifyIndex <= WAIT_OBJECT_0 + wavPlayer->m_notifyCount - 1))
 
-					//	thread itself ends, no need to make WavPlayer waiting
-					//	this thread ends
-					wavPlayer->m_threadHandle = NULL;
+				throw std::exception("WaitForSingleObject error");
 
-					if (wavPlayer->m_outerNotify)
-						wavPlayer->m_outerNotify->wavPlayerAudioEnds();
+			if (notifyIndex == wavPlayer->m_notifyCount - 1)
+				break;
 
-					break;
-				}
+			//	if return false, the audio ends
+			if (tryToFillNextBuffer(wavPlayer, notifyIndex) == false) {
+				wavPlayer->stop();
+
+				////	thread itself ends, no need to make WavPlayer waiting
+				////	this thread ends
+				//wavPlayer->m_threadHandle = NULL;
+
+				if (wavPlayer->m_outerNotify)
+					wavPlayer->m_outerNotify->wavPlayerAudioEnds();
+				break;
 			}
 		}
 		catch (std::exception& exception) {
@@ -310,12 +329,8 @@ DWORD WINAPI WavPlayer::dataFillingThread(LPVOID param)
 }
 
 //	if it return false, it fills less than half buffer size data, which indicates the audio is ending
-bool WavPlayer::waitToFillHalfBuffer(WavPlayer* wavPlayer, unsigned bufferSliceIndex)
+bool WavPlayer::tryToFillNextBuffer(WavPlayer* wavPlayer, unsigned bufferSliceIndex)
 {
-	DWORD ret = WaitForSingleObject(wavPlayer->m_notifyHandles[bufferSliceIndex], INFINITE);
-	if (ret != WAIT_OBJECT_0)
-		throw std::exception("WaitForSingleObject error");
-
 	if (wavPlayer->m_notifyHandles[bufferSliceIndex] == wavPlayer->m_endNotifyHandle) {
 		if (--wavPlayer->m_endNotifyLoopCount == 0)			return false;
 

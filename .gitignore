@@ -1,0 +1,11 @@
+**/*.exe
+**/*.ilk
+**/*.pdb
+**/*.opensdf
+**/*.sdf
+**/*.suo
+**/*.vcxproj.*
+
+**/debug/
+**/GeneratedFiles/
+**/Win32

@@ -1,3 +1,4 @@
+# VS related files
 **/*.exe
 **/*.ilk
 **/*.pdb
@@ -9,3 +10,7 @@
 **/debug/
 **/GeneratedFiles/
 **/Win32
+
+# Qt relates files
+**/build*/
+**/*.pro.user

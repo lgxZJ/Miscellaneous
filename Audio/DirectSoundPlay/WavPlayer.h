@@ -17,6 +17,8 @@ class IAudioEndNotify
 {
 public:
 	virtual void wavPlayerAudioEnds() = 0;
+    //  progress range is 0~totalTime
+	virtual void wavPlayerProgressUpdated(unsigned currentPlayingTime) = 0;
 };
 
 class WavPlayer
@@ -27,13 +29,14 @@ public:
 
     void setFile(std::wstring filepath, HWND windowHandle);
 
-    inline bool isPlaying() const { return m_isPlaying; }
+    inline bool     isPlaying() const { return m_isPlaying; }
+    inline unsigned getAudioTotalTime() const { return m_wavFile.getAudioTime(); }
 
     void play();
     void stop();
     void resume();
-	
-	void setAudioEndsNotify(IAudioEndNotify* outerNotify);
+
+    void        setAudioEndsNotify(IAudioEndNotify* outerNotify);
 
 private:
     void openDefaultAudioDevice(HWND windowHandle);
@@ -42,6 +45,8 @@ private:
 	void startDataFillingThread();
 	void setNotifyEvent(HANDLE* notifyHandles, DWORD* bufferOffsets, unsigned num);
     void cleanResources();
+	void sendProgressUpdatedSignal();
+	void sendAudioEndsSignal();
 	unsigned getBufferIndexFromNotifyIndex(unsigned notifyIndex);
 
     inline bool fileSet() const    { return m_directSound8 != nullptr; }
@@ -62,6 +67,7 @@ private:
     bool            m_isPlaying;
     unsigned        m_secondaryBufferSize;
     char*           m_nextDataToPlay;
+	unsigned		m_currentPlayingTime;
 
 	//	the notifies include:
 	//		1) ends notify, 

@@ -21,6 +21,7 @@ WavPlayer::WavPlayer()
 	, m_endNotifyHandle(NULL)
 	, m_endNotifyLoopCount(0)
 	, m_dataFillingEnds(false)
+    , m_currentPlayingTime(-1)
 {
 }
 
@@ -34,6 +35,7 @@ void WavPlayer::cleanResources()
 	//	must call IDirectSound::Stop(), or the data filling thread will not be notified
 	if (isPlaying())		
 		stop();
+    m_currentPlayingTime = -1;
     m_wavFile.clean();
 
 	if (m_threadHandle != NULL) {
@@ -73,6 +75,8 @@ void WavPlayer::cleanResources()
 	m_additionalEndNotify = false;
 }
 
+//////////////////////////////////////////////////////////////////////////////////
+
 void WavPlayer::setFile(std::wstring filePath, HWND windowHandle)
 {
     Q_ASSERT (!filePath.empty() && windowHandle != NULL);
@@ -89,6 +93,8 @@ void WavPlayer::setFile(std::wstring filePath, HWND windowHandle)
     startDataFillingThread();
 }
 
+//////////////////////////////////////////////////////////////////////////////////
+
 void WavPlayer::play()
 {
     assert (m_soundBufferInterface != nullptr && !m_isPlaying);
@@ -99,7 +105,17 @@ void WavPlayer::play()
 	if (m_soundBufferInterface->Play(0, 0, DSBPLAY_LOOPING) != DS_OK)
         throw std::exception("Play error");
 	m_isPlaying = true;
+
+	sendProgressUpdatedSignal();
 }
+
+void WavPlayer::sendProgressUpdatedSignal()
+{
+	if (m_outerNotify)
+		m_outerNotify->wavPlayerProgressUpdated(m_currentPlayingTime);
+}
+
+//////////////////////////////////////////////////////////////////////////////////
 
 void WavPlayer::stop()
 {
@@ -110,6 +126,8 @@ void WavPlayer::stop()
 	m_isPlaying = false;
 }
 
+//////////////////////////////////////////////////////////////////////////////////
+
 void WavPlayer::resume()
 {
     assert (m_soundBufferInterface != nullptr && !m_isPlaying);
@@ -119,12 +137,16 @@ void WavPlayer::resume()
 	m_isPlaying = true;
 }
 
+//////////////////////////////////////////////////////////////////////////////////
+
 void WavPlayer::setAudioEndsNotify(IAudioEndNotify* outerNotify)
 {
 	assert (outerNotify != NULL);
 
 	m_outerNotify = outerNotify;
 }
+
+//////////////////////////////////////////////////////////////////////////////////
 
 void WavPlayer::openDefaultAudioDevice(HWND windowHandle)
 {
@@ -318,12 +340,10 @@ DWORD WINAPI WavPlayer::dataFillingThread(LPVOID param)
 			if (tryToFillNextBuffer(wavPlayer, notifyIndex) == false) {
 				wavPlayer->stop();
 
-				////	thread itself ends, no need to make WavPlayer waiting
-				////	this thread ends
-				//wavPlayer->m_threadHandle = NULL;
+                ++wavPlayer->m_currentPlayingTime;
+                wavPlayer->sendProgressUpdatedSignal();
 
-				if (wavPlayer->m_outerNotify)
-					wavPlayer->m_outerNotify->wavPlayerAudioEnds();
+				wavPlayer->sendAudioEndsSignal();
 				break;
 			}
 		}
@@ -333,6 +353,12 @@ DWORD WINAPI WavPlayer::dataFillingThread(LPVOID param)
 		}
 	}
 	return 0;
+}
+
+void WavPlayer::sendAudioEndsSignal()
+{
+	if (m_outerNotify)
+		m_outerNotify->wavPlayerAudioEnds();
 }
 
 //	if it return false, it fills less than half buffer size data, which indicates the audio is ending
@@ -360,6 +386,9 @@ bool WavPlayer::tryToFillNextBuffer(WavPlayer* wavPlayer, unsigned notifyEventIn
 					filledDataSize, 
 					wavPlayer->getBufferIndexFromNotifyIndex(notifyEventIndex));
 	wavPlayer->m_nextDataToPlay += filledDataSize;
+
+	++wavPlayer->m_currentPlayingTime;
+	wavPlayer->sendProgressUpdatedSignal();
 	return true;
 }
 

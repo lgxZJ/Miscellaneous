@@ -8,6 +8,8 @@
 
 #include <cassert>
 
+/////////////////////////////////////////////////////////////////////////
+
 class AudioEndsEvent : public QEvent
 {
 public:
@@ -15,6 +17,20 @@ public:
 
 	QEvent::Type type() { return (QEvent::Type)(QEvent::User + 1); }
 };
+
+struct AudioProgressEvent : public QEvent
+{
+    AudioProgressEvent(unsigned currentPlayingTime)
+        : QEvent(type())
+        , m_currentPlayingTime(currentPlayingTime)
+    {}
+
+    QEvent::Type type()         { return (QEvent::Type)(QEvent::User + 2); }
+
+    unsigned m_currentPlayingTime;
+};
+
+/////////////////////////////////////////////////////////////////////////
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -31,9 +47,15 @@ MainWindow::~MainWindow()
 
 void MainWindow::wavPlayerAudioEnds()
 {
+	//	postEvent() takes the ownership of the 'new'ed object
 	qApp->postEvent(this, new AudioEndsEvent());
 }
 
+void MainWindow::wavPlayerProgressUpdated(unsigned currentPlayingTime)
+{
+    qApp->postEvent(this, new AudioProgressEvent(currentPlayingTime));
+}
+#include <QDebug>
 void MainWindow::customEvent(QEvent* event)
 {
 	auto audioEndsEvent = dynamic_cast<AudioEndsEvent*>(event);
@@ -42,6 +64,12 @@ void MainWindow::customEvent(QEvent* event)
 		ui->playButton->setEnabled(false);
 
 		ui->playButton->setText("Play");
+		audioEndsEvent->setAccepted(true);
+	}
+
+	auto audioProgressEvent = dynamic_cast<AudioProgressEvent*>(event);
+	if (audioProgressEvent != nullptr) {
+        ui->playingTimeSlider->setValue(audioProgressEvent->m_currentPlayingTime);
 	}
 
 	QObject::customEvent(event);
@@ -57,6 +85,10 @@ void MainWindow::on_openWaveButton_clicked(bool)
     if (!filePath.isEmpty()) {
         try {
             m_wavPlayer.setFile(filePath.toStdWString(), reinterpret_cast<HWND>(this->winId()));
+
+            ui->playingTimeSlider->setMinimum(0);
+            ui->playingTimeSlider->setMaximum(m_wavPlayer.getAudioTotalTime());
+
             ui->playButton->setEnabled(true);
 			ui->playButton->setText("Play");
 			ui->stopButton->setEnabled(false);

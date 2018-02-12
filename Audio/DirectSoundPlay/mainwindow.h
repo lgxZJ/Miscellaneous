@@ -18,6 +18,7 @@ public:
     ~MainWindow();
 
 	void wavPlayerAudioEnds() override;
+	void wavPlayerProgressUpdated(unsigned currentPlayingTime) override;
 
 	void customEvent(QEvent* event) override;
 

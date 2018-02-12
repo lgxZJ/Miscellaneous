@@ -42,12 +42,14 @@ private:
 	void startDataFillingThread();
 	void setNotifyEvent(HANDLE* notifyHandles, DWORD* bufferOffsets, unsigned num);
     void cleanResources();
+	unsigned getBufferIndexFromNotifyIndex(unsigned notifyIndex);
 
     inline bool fileSet() const    { return m_directSound8 != nullptr; }
 
 	static DWORD WINAPI dataFillingThread(LPVOID param);
-	static bool WINAPI	tryToFillNextBuffer(WavPlayer* wavPlayer, unsigned bufferSliceIndex);
-	static void WINAPI	lockAndFillData(WavPlayer* wavPlayer, char* dataPtr, DWORD dataSizeInBytes);
+	static bool	WINAPI	tryToFillNextBuffer(WavPlayer* wavPlayer, unsigned bufferSliceIndex);
+	static void WINAPI	lockAndFillData(WavPlayer* wavPlayer, char* dataPtr, DWORD dataSizeInBytes, unsigned bufferSliceIndex);
+	
 
 private:
     WavFile         m_wavFile;
@@ -72,10 +74,15 @@ private:
 	bool			m_additionalEndNotify;
 	HANDLE			m_endNotifyHandle;
 	unsigned		m_endNotifyLoopCount;
+	unsigned		m_additionalNotifyIndex;
 
 	bool				m_dataFillingEnds;
 	HANDLE				m_threadHandle;
 	IAudioEndNotify*	m_outerNotify;
+
+	static const unsigned m_prefilledBufferSliceCount = 1;
 };
+
+//	notify map to data fill notify
 
 #endif // WAVPLAYER_H

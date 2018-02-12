@@ -26,9 +26,6 @@ WavPlayer::WavPlayer()
 
 WavPlayer::~WavPlayer()
 {
-	if (SetEvent(m_notifyHandles[m_notifyCount - 1]) != 0) {
-		//todo:	do log
-	}
     cleanResources();
 }
 
@@ -40,6 +37,10 @@ void WavPlayer::cleanResources()
     m_wavFile.clean();
 
 	if (m_threadHandle != NULL) {
+		if (m_notifyCount > 0 && SetEvent(m_notifyHandles[m_notifyCount - 1]) != 0) {
+			//todo:	do log
+		}
+
 		m_quitDataFillingThread = true;
 		if (WaitForSingleObject(m_threadHandle, INFINITE) != WAIT_OBJECT_0)
 			throw std::exception("WaitForSingleObject error");
@@ -214,11 +215,11 @@ void WavPlayer::startDataFillingThread()
 	m_endNotifyLoopCount = entireBufferLoopCount + 1;
 
 	//	todo: bug here
-	unsigned additionalNotifyIndex = 0;
+	m_additionalNotifyIndex = 0;
 	if (m_additionalEndNotify)
 		for (unsigned i = 1; i < m_bufferSliceCount; ++i)
 			if (bufferEndOffset < (m_secondaryBufferSize / m_bufferSliceCount * i)) {
-				additionalNotifyIndex = i;
+				m_additionalNotifyIndex = i;
 				break;
 			}
 	
@@ -237,7 +238,7 @@ void WavPlayer::startDataFillingThread()
 		if (m_notifyHandles[i] == NULL)
 			throw std::exception("CreateEvent error");
 
-		if (m_additionalEndNotify && i == additionalNotifyIndex) {
+		if (m_additionalEndNotify && i == m_additionalNotifyIndex) {
 			//	set buffer end notify
 			m_notifyOffsets[i] = bufferEndOffset;
 			m_endNotifyHandle = m_notifyHandles[i];
@@ -248,7 +249,7 @@ void WavPlayer::startDataFillingThread()
 			//	NOTE:	the entire buffer size must can be devided by this `notifyCount`,
 			//	or it will lost some bytes when filling data into the buffer. since the end
 			//	notify is inside the notify count, we need to calculate the buffer slice index.
-			unsigned bufferSliceIndex = i > additionalNotifyIndex ? (i - 1) : i;
+			unsigned bufferSliceIndex = getBufferIndexFromNotifyIndex(i);
 			m_notifyOffsets[i] = m_secondaryBufferSize / m_bufferSliceCount * bufferSliceIndex;
 			
 			if (!m_additionalEndNotify && m_notifyOffsets[i] == bufferEndOffset)
@@ -264,6 +265,12 @@ void WavPlayer::startDataFillingThread()
 		CloseHandle(m_notifyHandles[1]);
 		throw std::exception("Data filling thread create failed");
 	}
+}
+
+//	the end notify is the last notify and is already judged before calling this function
+unsigned WavPlayer::getBufferIndexFromNotifyIndex(unsigned notifyIndex)
+{
+	return notifyIndex > m_additionalNotifyIndex ? (notifyIndex - 1) : notifyIndex;
 }
 
 void WavPlayer::setNotifyEvent(HANDLE* notifyHandles, DWORD* bufferOffsets, unsigned num)
@@ -329,9 +336,9 @@ DWORD WINAPI WavPlayer::dataFillingThread(LPVOID param)
 }
 
 //	if it return false, it fills less than half buffer size data, which indicates the audio is ending
-bool WavPlayer::tryToFillNextBuffer(WavPlayer* wavPlayer, unsigned bufferSliceIndex)
+bool WavPlayer::tryToFillNextBuffer(WavPlayer* wavPlayer, unsigned notifyEventIndex)
 {
-	if (wavPlayer->m_notifyHandles[bufferSliceIndex] == wavPlayer->m_endNotifyHandle) {
+	if (wavPlayer->m_notifyHandles[notifyEventIndex] == wavPlayer->m_endNotifyHandle) {
 		if (--wavPlayer->m_endNotifyLoopCount == 0)			return false;
 
 		//	additional end notify event do no fill data into buffer
@@ -348,22 +355,28 @@ bool WavPlayer::tryToFillNextBuffer(WavPlayer* wavPlayer, unsigned bufferSliceIn
 		wavPlayer->m_dataFillingEnds = true;
 	}
 
-	lockAndFillData(wavPlayer, wavPlayer->m_nextDataToPlay, filledDataSize);
+	lockAndFillData(wavPlayer, 
+					wavPlayer->m_nextDataToPlay, 
+					filledDataSize, 
+					wavPlayer->getBufferIndexFromNotifyIndex(notifyEventIndex));
 	wavPlayer->m_nextDataToPlay += filledDataSize;
 	return true;
 }
 
-void WavPlayer::lockAndFillData(WavPlayer* wavPlayer, char* dataPtr, DWORD dataSizeInBytes)
+void WavPlayer::lockAndFillData(WavPlayer* wavPlayer, char* dataPtr, DWORD dataSizeInBytes, unsigned bufferSliceIndex)
 {
 	LPVOID firstAudioAddress;
 	LPVOID secondAudioAddress;
 	DWORD  firstAudioBytes;
 	DWORD  secondAudioBytes;
-	HRESULT result = wavPlayer->m_soundBufferInterface->Lock(0, 
+	DWORD  bufferOffset = wavPlayer->m_secondaryBufferSize / wavPlayer->m_bufferSliceCount *
+						  ((bufferSliceIndex + m_prefilledBufferSliceCount) % wavPlayer->m_bufferSliceCount);
+	HRESULT result = wavPlayer->m_soundBufferInterface->Lock(
+							bufferOffset,
 							dataSizeInBytes,
 							&firstAudioAddress, &firstAudioBytes,
 							&secondAudioAddress, &secondAudioBytes,
-							DSBLOCK_FROMWRITECURSOR);
+							0);
 	if (result == DSERR_BUFFERLOST) {
 		result = wavPlayer->m_soundBufferInterface->Restore();
 	}

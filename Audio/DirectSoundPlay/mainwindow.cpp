@@ -55,7 +55,7 @@ void MainWindow::wavPlayerProgressUpdated(unsigned currentPlayingTime)
 {
     qApp->postEvent(this, new AudioProgressEvent(currentPlayingTime));
 }
-#include <QDebug>
+
 void MainWindow::customEvent(QEvent* event)
 {
 	auto audioEndsEvent = dynamic_cast<AudioEndsEvent*>(event);
@@ -69,7 +69,9 @@ void MainWindow::customEvent(QEvent* event)
 
 	auto audioProgressEvent = dynamic_cast<AudioProgressEvent*>(event);
 	if (audioProgressEvent != nullptr) {
-        ui->playingTimeSlider->setValue(audioProgressEvent->m_currentPlayingTime);
+        auto currentTime = audioProgressEvent->m_currentPlayingTime;
+        ui->playingTimeSlider->setValue(currentTime);
+        ui->currentTimeLabel->setText(QString("CurrentTime:%1s").arg(currentTime));
 	}
 
 	QObject::customEvent(event);
@@ -86,8 +88,12 @@ void MainWindow::on_openWaveButton_clicked(bool)
         try {
             m_wavPlayer.setFile(filePath.toStdWString(), reinterpret_cast<HWND>(this->winId()));
 
+            auto totalTime = m_wavPlayer.getAudioTotalTime();
             ui->playingTimeSlider->setMinimum(0);
-            ui->playingTimeSlider->setMaximum(m_wavPlayer.getAudioTotalTime());
+            ui->playingTimeSlider->setMaximum(totalTime);
+
+            ui->currentTimeLabel->setText(QString("CurrentTime:0s"));
+            ui->totalTimeLabel->setText(QString("TotalTime:%1s").arg(totalTime));
 
             ui->playButton->setEnabled(true);
 			ui->playButton->setText("Play");

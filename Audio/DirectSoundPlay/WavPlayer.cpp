@@ -336,6 +336,12 @@ DWORD WINAPI WavPlayer::dataFillingThread(LPVOID param)
 			if (notifyIndex == wavPlayer->m_notifyCount - 1)
 				break;
 
+			//	each notify represents one second(or approximately one second) except the exit notify
+			if (!(wavPlayer->m_additionalNotifyIndex == notifyIndex && wavPlayer->m_endNotifyLoopCount > 0)) {
+				++wavPlayer->m_currentPlayingTime;
+				wavPlayer->sendProgressUpdatedSignal();
+			}
+
 			//	if return false, the audio ends
 			if (tryToFillNextBuffer(wavPlayer, notifyIndex) == false) {
 				wavPlayer->stop();
@@ -344,7 +350,7 @@ DWORD WINAPI WavPlayer::dataFillingThread(LPVOID param)
                 wavPlayer->sendProgressUpdatedSignal();
 
 				wavPlayer->sendAudioEndsSignal();
-				break;
+				//	not break the loop, we need to update the audio progress although data filling ends
 			}
 		}
 		catch (std::exception& exception) {
@@ -386,9 +392,6 @@ bool WavPlayer::tryToFillNextBuffer(WavPlayer* wavPlayer, unsigned notifyEventIn
 					filledDataSize, 
 					wavPlayer->getBufferIndexFromNotifyIndex(notifyEventIndex));
 	wavPlayer->m_nextDataToPlay += filledDataSize;
-
-	++wavPlayer->m_currentPlayingTime;
-	wavPlayer->sendProgressUpdatedSignal();
 	return true;
 }
 

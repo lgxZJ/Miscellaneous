@@ -139,6 +139,15 @@ void WavPlayer::resume()
 
 //////////////////////////////////////////////////////////////////////////////////
 
+void WavPlayer::playFrom(unsigned seconds)
+{
+	Q_ASSERT(seconds > m_wavFile.getAudioTime());
+
+
+}
+
+//////////////////////////////////////////////////////////////////////////////////
+
 void WavPlayer::setAudioEndsNotify(IAudioEndNotify* outerNotify)
 {
 	assert (outerNotify != NULL);
@@ -199,7 +208,13 @@ void WavPlayer::fillDataIntoBuffer()
                                     &secondAudioAddress, &secondAudioBytes,
                                     0);
     if (result == DSERR_BUFFERLOST) {
-        result = m_soundBufferInterface->Restore();
+		if (m_soundBufferInterface->Restore() == DS_OK) {
+			result = m_soundBufferInterface->Lock(0,
+				m_secondaryBufferSize / m_bufferSliceCount,
+				&firstAudioAddress, &firstAudioBytes,
+				&secondAudioAddress, &secondAudioBytes,
+				0);
+		}
     }
     if (result != DS_OK) {
         throw std::exception("Cannot lock entire secondary buffer(restore tryed)");
@@ -250,7 +265,7 @@ void WavPlayer::startDataFillingThread()
 	if (m_notifyHandles == nullptr)
 		throw std::exception("malloc error");
 	m_notifyOffsets = static_cast<DWORD*>(malloc(sizeof(DWORD)* (m_notifyCount)));
-	if (m_notifyHandles == nullptr)
+	if (m_notifyOffsets == nullptr)
 		throw std::exception("malloc error");
 
 	for (unsigned i = 0; i < m_notifyCount; ++i) {
@@ -408,7 +423,14 @@ void WavPlayer::lockAndFillData(WavPlayer* wavPlayer, char* dataPtr, DWORD dataS
 							&secondAudioAddress, &secondAudioBytes,
 							0);
 	if (result == DSERR_BUFFERLOST) {
-		result = wavPlayer->m_soundBufferInterface->Restore();
+		if (wavPlayer->m_soundBufferInterface->Restore() == DS_OK) {
+			result = wavPlayer->m_soundBufferInterface->Lock(
+				bufferOffset,
+				dataSizeInBytes,
+				&firstAudioAddress, &firstAudioBytes,
+				&secondAudioAddress, &secondAudioBytes,
+				0);
+		}
 	}
 	if (result != DS_OK) {
 		throw std::exception("Cannot lock entire secondary buffer(restore tryed)");

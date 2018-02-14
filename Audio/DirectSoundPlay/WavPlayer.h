@@ -32,11 +32,12 @@ public:
     inline bool     isPlaying() const { return m_isPlaying; }
     inline unsigned getAudioTotalTime() const { return m_wavFile.getAudioTime(); }
 
-    void play();
-    void stop();
-    void resume();
+    void play		();
+    void stop		();
+    void resume		();
+	void playFrom	(unsigned seconds);
 
-    void        setAudioEndsNotify(IAudioEndNotify* outerNotify);
+    void setAudioEndsNotify(IAudioEndNotify* outerNotify);
 
 private:
     void openDefaultAudioDevice(HWND windowHandle);

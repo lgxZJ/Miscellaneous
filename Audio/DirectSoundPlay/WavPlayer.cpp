@@ -186,8 +186,6 @@ void WavPlayer::createBufferOfSeconds(unsigned seconds)
 
 void WavPlayer::fillDataIntoBuffer()
 {
-	//m_nextDataToPlay = static_cast<char*>(m_wavFile.getAudioData());
-	//return;
 	Q_ASSERT(m_bufferSliceCount > 1);
 
     //  fill half buffer to signal the notify event to do next data filling

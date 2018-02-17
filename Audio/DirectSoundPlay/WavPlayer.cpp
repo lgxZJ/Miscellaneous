@@ -157,7 +157,7 @@ void WavPlayer::resume()
 void WavPlayer::playFrom(unsigned seconds)
 {
     Q_ASSERT(seconds >= 0 &&
-             seconds <= m_wavFile.getAudioTime());
+             seconds < m_wavFile.getAudioTime());
 
 	auto playing = isPlaying();
 

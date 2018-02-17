@@ -138,6 +138,12 @@ void MainWindow::on_stopButton_clicked(bool)
 
 void MainWindow::on_playingTimeSlider_sliderReleased()
 {
+	//	the last second is not the actual data second, it is only used
+	//	to indicate users the total audio time. if user drag the slider
+	//	and release at this position, skip it.
+	if (ui->playingTimeSlider->sliderPosition() == ui->playingTimeSlider->maximum())
+		return;
+
     try {
         m_wavPlayer.playFrom(ui->playingTimeSlider->sliderPosition());
     } catch (std::exception& exception) {

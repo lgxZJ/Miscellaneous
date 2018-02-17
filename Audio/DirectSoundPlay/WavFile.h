@@ -15,13 +15,13 @@ public:
     void clean();
 
 	//	WARNING:
-	//		These functions must be called after `open()`.
+	//		The following functions must be called after `open()`.
     WAVEFORMATEX&	getWaveFormat()         { return m_waveFormat; }
     void*           getAudioData() const    { return m_data; }
 	DWORD			getAudioSize() const	{ return m_dataSize; }
     //  time not fit into one second is treated as one second
     unsigned		getAudioTime() const	{ return (m_dataSize + m_waveFormat.nAvgBytesPerSec - 1) / m_waveFormat.nAvgBytesPerSec; }
-	char*			getDataEndPtr() const   { return (char*)m_data + m_dataSize; }
+	char*			getDataEndPtr() const	{ return (char*)m_data + m_dataSize; }
 
 private:
     inline bool opened() const { return m_mmioHandle != NULL; }

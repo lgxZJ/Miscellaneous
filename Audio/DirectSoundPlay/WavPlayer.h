@@ -27,7 +27,7 @@ public:
     WavPlayer();
     ~WavPlayer();
 
-    void setFile(std::wstring filepath, HWND windowHandle);
+	void setFile(std::wstring filepath, HWND windowHandle);
 
     inline bool     isPlaying() const { return m_isPlaying; }
     inline unsigned getAudioTotalTime() const { return m_wavFile.getAudioTime(); }
@@ -38,14 +38,17 @@ public:
 	void playFrom	(unsigned seconds);
 
     void setAudioEndsNotify(IAudioEndNotify* outerNotify);
-
+	
 private:
+	enum CleanOption { CleanNoWav, CleanAll };
+
     void openDefaultAudioDevice(HWND windowHandle);
     void createBufferOfSeconds(unsigned seconds);
-    void fillDataIntoBuffer();
-	void startDataFillingThread();
+    void prefillDataIntoBuffer();
+    void preparePlayResource();
+	void startDataFillingThread(char* startDataPtr);
 	void setNotifyEvent(HANDLE* notifyHandles, DWORD* bufferOffsets, unsigned num);
-    void cleanResources();
+    void cleanResources(CleanOption option);
 	void sendProgressUpdatedSignal();
 	void sendAudioEndsSignal();
 	unsigned getBufferIndexFromNotifyIndex(unsigned notifyIndex);
@@ -60,6 +63,7 @@ private:
 private:
     WavFile         m_wavFile;
 
+	HWND					m_windowHandle;
 	unsigned				m_bufferSliceCount;
     IDirectSound8*          m_directSound8;
     IDirectSoundBuffer8*    m_soundBufferInterface;
@@ -87,7 +91,8 @@ private:
 	HANDLE				m_threadHandle;
 	IAudioEndNotify*	m_outerNotify;
 
-	static const unsigned m_prefilledBufferSliceCount = 1;
+	static const unsigned s_prefilledBufferSliceCount = 1;
+    static const unsigned s_secondsInBuffer = 4;
 };
 
 //	notify map to data fill notify

@@ -26,6 +26,7 @@ private slots:
     void on_openWaveButton_clicked(bool);
     void on_playButton_clicked(bool);
 	void on_stopButton_clicked(bool);
+    void on_playingTimeSlider_sliderReleased();
 
 private:
     Ui::MainWindow *ui;

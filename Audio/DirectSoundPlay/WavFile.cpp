@@ -3,8 +3,9 @@
 #include <Windows.h>
 
 #include <exception>
+#include <cassert>
 
-#include <QDebug>
+///////////////////////////////////////////////////////////////////
 
 WavFile::WavFile()
     : m_mmioHandle(NULL)
@@ -30,9 +31,11 @@ void WavFile::clean()
     }
 }
 
+////////////////////////////////////////////////////////////////////////////
+
 void WavFile::open(std::wstring filePath)
 {
-    Q_ASSERT (!opened());
+    assert(!opened());
 
     //  convert to wchar since mmioOpen only accept non-const wchar_t*
     wchar_t tempFilePath[128] = {0};
@@ -98,3 +101,7 @@ void WavFile::open(std::wstring filePath)
         throw std::exception("cannot read data!");
     }
 }
+
+//////////////////////////////////////////////////////////////////////////////
+
+///////////////////////////////////////////////////////////////////////////////

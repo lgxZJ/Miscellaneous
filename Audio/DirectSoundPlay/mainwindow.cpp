@@ -68,9 +68,10 @@ void MainWindow::customEvent(QEvent* event)
 	}
 
 	auto audioProgressEvent = dynamic_cast<AudioProgressEvent*>(event);
-	if (audioProgressEvent != nullptr) {
+    if (audioProgressEvent != nullptr) {
         auto currentTime = audioProgressEvent->m_currentPlayingTime;
-        ui->playingTimeSlider->setValue(currentTime);
+		if (!ui->playingTimeSlider->isSliderDown())
+			ui->playingTimeSlider->setValue(currentTime);
         ui->currentTimeLabel->setText(QString("CurrentTime:%1s").arg(currentTime));
 	}
 
@@ -87,20 +88,21 @@ void MainWindow::on_openWaveButton_clicked(bool)
     if (!filePath.isEmpty()) {
         try {
             m_wavPlayer.setFile(filePath.toStdWString(), reinterpret_cast<HWND>(this->winId()));
+		}
+		catch (std::exception& exception) {
+			QMessageBox::warning(this, "Player error", exception.what());
+		}
 
-            auto totalTime = m_wavPlayer.getAudioTotalTime();
-            ui->playingTimeSlider->setMinimum(0);
-            ui->playingTimeSlider->setMaximum(totalTime);
+        auto totalTime = m_wavPlayer.getAudioTotalTime();
+        ui->playingTimeSlider->setMinimum(0);
+        ui->playingTimeSlider->setMaximum(totalTime);
 
-            ui->currentTimeLabel->setText(QString("CurrentTime:0s"));
-            ui->totalTimeLabel->setText(QString("TotalTime:%1s").arg(totalTime));
+        ui->currentTimeLabel->setText(QString("CurrentTime:0s"));
+        ui->totalTimeLabel->setText(QString("TotalTime:%1s").arg(totalTime));
 
-            ui->playButton->setEnabled(true);
-			ui->playButton->setText("Play");
-			ui->stopButton->setEnabled(false);
-        } catch (std::exception& exception) {
-            QMessageBox::warning(this, "Player error", exception.what());
-        }
+        ui->playButton->setEnabled(true);
+		ui->playButton->setText("Play");
+		ui->stopButton->setEnabled(false);
     }
 }
 
@@ -110,9 +112,11 @@ void MainWindow::on_playButton_clicked(bool)
 
 	try {
 		m_wavPlayer.play();
+
 		ui->playButton->setDisabled(true);
 		ui->playButton->setText("Continue");
 		ui->stopButton->setEnabled(true);
+        ui->playingTimeSlider->setEnabled(true);
 	}
 	catch (std::exception& exception) {
 		QMessageBox::warning(this, "stop error", exception.what());
@@ -129,5 +133,14 @@ void MainWindow::on_stopButton_clicked(bool)
 	}
 	catch (std::exception& exception) {
 		QMessageBox::warning(this, "stop error", exception.what());
-	}
+    }
+}
+
+void MainWindow::on_playingTimeSlider_sliderReleased()
+{
+    try {
+        m_wavPlayer.playFrom(ui->playingTimeSlider->sliderPosition());
+    } catch (std::exception& exception) {
+        QMessageBox::warning(this, "playFrom error", exception.what());
+    }
 }

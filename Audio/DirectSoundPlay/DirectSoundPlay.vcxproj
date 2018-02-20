@@ -149,6 +149,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GeneratedFiles\ui_mainwindow.h" />
+    <ClInclude Include="WavException.h" />
     <ClInclude Include="WavFile.h" />
     <ClInclude Include="WavPlayer.h" />
     <CustomBuild Include="mainwindow.h">

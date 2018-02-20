@@ -87,23 +87,45 @@ void MainWindow::on_openWaveButton_clicked(bool)
                                  QFileDialog::ReadOnly);
     if (!filePath.isEmpty()) {
         try {
-            m_wavPlayer.setFile(filePath.toStdWString(), reinterpret_cast<HWND>(this->winId()));
-		}
-		catch (std::exception& exception) {
-			QMessageBox::warning(this, "Player error", exception.what());
-		}
+            m_wavPlayer.setFile(filePath.toStdWString(), reinterpret_cast<HWND>(this->winId()));		
 
-        auto totalTime = m_wavPlayer.getAudioTotalTime();
-        ui->playingTimeSlider->setMinimum(0);
-        ui->playingTimeSlider->setMaximum(totalTime);
+            auto totalTime = m_wavPlayer.getAudioTotalTime();
+            ui->playingTimeSlider->setMinimum(0);
+            ui->playingTimeSlider->setMaximum(totalTime);
 
-        ui->currentTimeLabel->setText(QString("CurrentTime:0s"));
-        ui->totalTimeLabel->setText(QString("TotalTime:%1s").arg(totalTime));
+            ui->currentTimeLabel->setText(QString("CurrentTime:0s"));
+            ui->totalTimeLabel->setText(QString("TotalTime:%1s").arg(totalTime));
 
-        ui->playButton->setEnabled(true);
-		ui->playButton->setText("Play");
-		ui->stopButton->setEnabled(false);
+            ui->playButton->setEnabled(true);
+            ui->playButton->setText("Play");
+            ui->stopButton->setEnabled(false);
+
+            //  update related UIs
+            updateOneForm(ui->volumeLabel, ui->volumeSlider, 100);
+            m_wavPlayer.setVolume(100);
+
+            updateOneForm(ui->channelLabel, ui->channelSlider, 0);
+            m_wavPlayer.setChannel(0);
+
+            updateOneForm(ui->frequencyLabel, ui->frequencySlider, m_wavPlayer.getFrequency());
+
+            ui->frequencySlider->setMinimum(m_wavPlayer.getFrequencyMin());
+            ui->frequencySlider->setMaximum(m_wavPlayer.getFrequencyMax());
+            ui->frequencySlider->setValue(m_wavPlayer.getFrequency());
+            ui->frequencyHeader->setText(QString("Frequency(%1~%2)")
+                                            .arg(m_wavPlayer.getFrequencyMin())
+                                            .arg(m_wavPlayer.getFrequencyMax()));
+        }
+        catch (std::exception& exception) {
+            QMessageBox::warning(this, "Player error", exception.what());
+        }
     }
+}
+
+void MainWindow::updateOneForm(QLabel* label, QSlider* slider, int value)
+{
+    label->setText(QString::number(value));
+    slider->setValue(value);
 }
 
 void MainWindow::on_playButton_clicked(bool)
@@ -117,6 +139,9 @@ void MainWindow::on_playButton_clicked(bool)
 		ui->playButton->setText("Continue");
 		ui->stopButton->setEnabled(true);
         ui->playingTimeSlider->setEnabled(true);
+        ui->volumeSlider->setEnabled(true);
+        ui->channelSlider->setEnabled(true);
+        ui->frequencySlider->setEnabled(true);
 	}
 	catch (std::exception& exception) {
 		QMessageBox::warning(this, "stop error", exception.what());
@@ -148,5 +173,35 @@ void MainWindow::on_playingTimeSlider_sliderReleased()
         m_wavPlayer.playFrom(ui->playingTimeSlider->sliderPosition());
     } catch (std::exception& exception) {
         QMessageBox::warning(this, "playFrom error", exception.what());
+    }
+}
+
+void MainWindow::on_volumeSlider_valueChanged(int value)
+{
+    try {
+        m_wavPlayer.setVolume(value);
+        ui->volumeLabel->setText(QString::number(value));
+    } catch (std::exception& exception) {
+        QMessageBox::warning(this, "setVolume error", exception.what());
+    }
+}
+
+void MainWindow::on_channelSlider_valueChanged(int value)
+{
+    try {
+        m_wavPlayer.setChannel(value);
+        ui->channelLabel->setText(QString::number(value));
+    } catch (std::exception& exception) {
+        QMessageBox::warning(this, "setChannel error", exception.what());
+    }
+}
+
+void MainWindow::on_frequencySlider_valueChanged(int value)
+{
+    try {
+        m_wavPlayer.setFrequency(value);
+        ui->frequencyLabel->setText(QString::number(value));
+    } catch (std::exception& exception) {
+        QMessageBox::warning(this, "setFrequency error", exception.what());
     }
 }

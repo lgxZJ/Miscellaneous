@@ -1,0 +1,2 @@
+1.  Frequency changing feature bug: when frequency changed, the audio time played not equals to the time computed.
+2.  Drag-drop play feature: when drag time slider into the last second, it plays glitches some times.

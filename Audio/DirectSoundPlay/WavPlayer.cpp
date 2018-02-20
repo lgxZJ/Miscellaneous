@@ -81,7 +81,7 @@ void WavPlayer::cleanResources(WavPlayer::CleanOption option)
 
 void WavPlayer::setFile(std::wstring filePath, HWND windowHandle)
 {
-    Q_ASSERT (!filePath.empty() && windowHandle != NULL);
+    assert (!filePath.empty() && windowHandle != NULL);
 
 	if (m_isPlaying)				stop();
     if (fileSet())					cleanResources(CleanAll);
@@ -95,7 +95,7 @@ void WavPlayer::setFile(std::wstring filePath, HWND windowHandle)
 
 void WavPlayer::preparePlayResource()
 {
-	Q_ASSERT(m_windowHandle != NULL);
+	assert (m_windowHandle != NULL);
 
 	m_notifyCount = m_bufferSliceCount = 4;
 
@@ -121,6 +121,7 @@ void WavPlayer::play()
         throw std::exception("Play error");
 	m_isPlaying = true;
 }
+
 
 void WavPlayer::sendProgressUpdatedSignal()
 {
@@ -153,10 +154,10 @@ void WavPlayer::resume()
 
 //////////////////////////////////////////////////////////////////////////////////
 
-//	`seconds` start from 1 to totalTime
+//	`seconds` start from 0 to totalTime
 void WavPlayer::playFrom(unsigned seconds)
 {
-    Q_ASSERT(seconds >= 0 &&
+    assert (seconds >= 0 &&
              seconds < m_wavFile.getAudioTime());
 
 	auto playing = isPlaying();
@@ -167,7 +168,110 @@ void WavPlayer::playFrom(unsigned seconds)
 							+ (m_secondaryBufferSize / s_secondsInBuffer) * seconds;
     preparePlayResource();
 
-	if (playing)	play();
+    if (playing)	play();
+}
+
+//////////////////////////////////////////////////////////////////////////////////
+
+#define GET_FREQUENCY_RANGE()                           \
+    assert (m_directSound8 != nullptr);                 \
+                                                        \
+	DSCAPS capabilities = { sizeof(capabilities) };		\
+    if (m_directSound8->GetCaps(&capabilities) != DS_OK)\
+        throw std::exception("GetCaps error");          \
+
+
+uint32_t WavPlayer::getFrequencyMin()
+{
+    GET_FREQUENCY_RANGE();
+    return capabilities.dwMinSecondarySampleRate;
+}
+
+uint32_t WavPlayer::getFrequencyMax()
+{
+    GET_FREQUENCY_RANGE();
+    return capabilities.dwMaxSecondarySampleRate;
+}
+
+#undef GET_FREQUENCY_RANGE
+
+//////////////////////////////////////////////////////////////////////////////////
+
+uint32_t WavPlayer::getFrequency()
+{
+	assert(m_soundBufferInterface != nullptr);
+
+	DWORD frequency;
+	if (m_soundBufferInterface->GetFrequency(&frequency) != DS_OK)
+		throw std::exception("GetFrequency error !");
+
+	return static_cast<uint32_t>(frequency);
+}
+
+//////////////////////////////////////////////////////////////////////////////////
+
+void WavPlayer::setFrequency(uint32_t frequency)
+{
+	assert(m_directSound8 != nullptr);
+	assert(m_soundBufferInterface != nullptr);
+
+	if (!(getFrequencyMin() <= frequency && frequency <= getFrequencyMax()))
+		throw std::exception("The specified frequency is not supported by DirectSound in this computer!");
+
+	if (m_soundBufferInterface->SetFrequency(static_cast<DWORD>(frequency)) != DS_OK)
+		throw std::exception("SetFrequency error!");
+}
+
+//////////////////////////////////////////////////////////////////////////////////
+
+long WavPlayer::getChannel()
+{
+	assert (m_soundBufferInterface != nullptr);
+
+	LONG channelRelative;
+	if (m_soundBufferInterface->GetPan(&channelRelative) != DS_OK)
+		throw std::exception("GetPan error");
+    return channelRelative / s_channelPercentageUnit;
+}
+
+//////////////////////////////////////////////////////////////////////////////////
+
+void WavPlayer::setChannel(long channel)
+{
+	assert(m_soundBufferInterface != nullptr);
+	assert(DSBPAN_RIGHT > 0 && DSBPAN_LEFT < 0 && 
+		   (-DSBPAN_RIGHT == DSBPAN_LEFT));
+
+    if (m_soundBufferInterface->SetPan(channel * s_channelPercentageUnit) != DS_OK)
+		throw std::exception("SetPan error");
+}
+
+/////////////////////////////////////////////////////////////////////////////////
+
+long WavPlayer::getVolume()
+{
+	assert (m_soundBufferInterface != nullptr);
+
+	LONG volume;
+	if (m_soundBufferInterface->GetVolume(&volume) != DS_OK)
+		throw std::exception("GetVolume error");
+
+	return static_cast<long>(volume) / s_volumeUnit;
+}
+
+//////////////////////////////////////////////////////////////////////////////////
+
+void WavPlayer::setVolume(long volume)
+{
+	assert (m_soundBufferInterface != nullptr);
+	assert (DSBVOLUME_MIN < 0 && DSBVOLUME_MAX == 0);
+    assert (volume >= 0);
+
+    //  in DirectSound, volume is considered as attenuations
+    //  which was supposed to common logics
+    auto attenuation = static_cast<LONG>(DSBVOLUME_MIN - (-volume * s_volumeUnit));
+    if (m_soundBufferInterface->SetVolume(attenuation) != DS_OK)
+		throw std::exception("SetVolume error");
 }
 
 //////////////////////////////////////////////////////////////////////////////////
@@ -199,7 +303,10 @@ void WavPlayer::createBufferOfSeconds(unsigned seconds)
     bufferDescription.dwFlags = DSBCAPS_CTRLPOSITIONNOTIFY |
                                 DSBCAPS_GLOBALFOCUS |
                                 DSBCAPS_GETCURRENTPOSITION2 |
-                                DSBCAPS_LOCDEFER ;
+                                DSBCAPS_LOCDEFER |
+                                DSBCAPS_CTRLVOLUME |
+                                DSBCAPS_CTRLPAN |
+                                DSBCAPS_CTRLFREQUENCY;
     bufferDescription.dwBufferBytes = m_secondaryBufferSize
                                     = m_wavFile.getWaveFormat().nAvgBytesPerSec * seconds;
     bufferDescription.dwReserved = 0;
@@ -219,7 +326,7 @@ void WavPlayer::createBufferOfSeconds(unsigned seconds)
 
 void WavPlayer::prefillDataIntoBuffer()
 {
-	Q_ASSERT(m_bufferSliceCount > 1);
+	assert (m_bufferSliceCount > 1);
 
     //  fill half buffer to signal the notify event to do next data filling
     LPVOID firstAudioAddress;
@@ -244,7 +351,7 @@ void WavPlayer::prefillDataIntoBuffer()
         throw std::exception("Cannot lock entire secondary buffer(restore tryed)");
     }
 
-	Q_ASSERT(firstAudioBytes == (m_secondaryBufferSize / m_bufferSliceCount * s_prefilledBufferSliceCount) &&
+	assert (firstAudioBytes == (m_secondaryBufferSize / m_bufferSliceCount * s_prefilledBufferSliceCount) &&
              secondAudioAddress == nullptr &&
              secondAudioBytes == 0);
     CopyMemory(firstAudioAddress, m_nextDataToPlay, firstAudioBytes);
@@ -260,8 +367,8 @@ void WavPlayer::prefillDataIntoBuffer()
 //  set notify event to stream the sound audio playing
 void WavPlayer::startDataFillingThread(char* startDataPtr)
 {
-	Q_ASSERT(m_notifyCount > 1);
-	Q_ASSERT(m_bufferSliceCount > 1);
+	assert (m_notifyCount > 1);
+	assert (m_bufferSliceCount > 1);
 
 	DWORD entireBufferLoopCount = (m_wavFile.getDataEndPtr() - startDataPtr) / m_secondaryBufferSize;
 	DWORD bufferEndOffset = (m_wavFile.getDataEndPtr() - startDataPtr) % m_secondaryBufferSize;

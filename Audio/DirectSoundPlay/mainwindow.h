@@ -9,6 +9,9 @@ namespace Ui {
     class MainWindow;
 }
 
+class QLabel;
+class QSlider;
+
 class MainWindow : public QMainWindow
 				 , public IAudioEndNotify
 {
@@ -27,6 +30,11 @@ private slots:
     void on_playButton_clicked(bool);
 	void on_stopButton_clicked(bool);
     void on_playingTimeSlider_sliderReleased();
+    void on_volumeSlider_valueChanged(int value);
+    void on_channelSlider_valueChanged(int value);
+    void on_frequencySlider_valueChanged(int value);
+
+    void updateOneForm(QLabel* label, QSlider* slider, int value);
 
 private:
     Ui::MainWindow *ui;

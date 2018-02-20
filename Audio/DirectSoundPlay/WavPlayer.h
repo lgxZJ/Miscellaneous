@@ -4,6 +4,7 @@
 #include "WavFile.h"
 
 #include <string>
+#include <cstdint>
 
 #include <dsound.h>
 
@@ -36,6 +37,17 @@ public:
     void stop		();
     void resume		();
 	void playFrom	(unsigned seconds);
+
+    uint32_t getFrequencyMin();
+    uint32_t getFrequencyMax();
+    uint32_t getFrequency();
+    void     setFrequency(uint32_t frequency);
+    //	channel value range from -100(left) to 100(right)
+    long     getChannel();
+    void     setChannel(long channel);
+	//	volume value range from 0 to 100
+    long     getVolume();
+    void     setVolume(long volume);
 
     void setAudioEndsNotify(IAudioEndNotify* outerNotify);
 	
@@ -93,6 +105,8 @@ private:
 
 	static const unsigned s_prefilledBufferSliceCount = 1;
     static const unsigned s_secondsInBuffer = 4;
+	static const long	  s_channelPercentageUnit = (DSBPAN_RIGHT - DSBPAN_LEFT) / 200;
+	static const long	  s_volumeUnit = (DSBVOLUME_MAX - DSBVOLUME_MIN) / 100;
 };
 
 //	notify map to data fill notify

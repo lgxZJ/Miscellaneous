@@ -4,6 +4,7 @@
 #include "WavFile.h"
 
 #include <string>
+#include <vector>
 #include <cstdint>
 
 #include <dsound.h>
@@ -25,10 +26,28 @@ public:
 class WavPlayer
 {
 public:
+	enum WavEffect {
+		Chorus = 0, 
+		Compression, 
+		Distortion, 
+		Echo, 
+		EnvironmentReverberation, 
+		Flange, 
+		Gargle, 
+		ParametricEqualizer, 
+		WavesReverberation 
+	};
+
     WavPlayer();
     ~WavPlayer();
 
 	void setFile(std::wstring filepath, HWND windowHandle);
+	void setAudioEndsNotify(IAudioEndNotify* outerNotify);
+
+	/////////////////////////////////////////////////////////////////////////////
+	//	WARNING:
+	//		The all following functions must be called after `setFile()`.
+	/////////////////////////////////////////////////////////////////////////////
 
     inline bool     isPlaying() const { return m_isPlaying; }
     inline unsigned getAudioTotalTime() const { return m_wavFile.getAudioTime(); }
@@ -49,7 +68,13 @@ public:
     long     getVolume();
     void     setVolume(long volume);
 
-    void setAudioEndsNotify(IAudioEndNotify* outerNotify);
+	//////////////////////////////////////////////////////////////////////
+	//	WARNING:
+	//		The following 9 functions must be called when one file is set
+	//		and audio is not playing.
+	//////////////////////////////////////////////////////////////////////
+	void	 addEffectOfType(WavEffect effect);
+	void	 applyEffects();
 	
 private:
 	enum CleanOption { CleanNoWav, CleanAll };
@@ -64,6 +89,7 @@ private:
 	void sendProgressUpdatedSignal();
 	void sendAudioEndsSignal();
 	unsigned getBufferIndexFromNotifyIndex(unsigned notifyIndex);
+	void addEffectToAudio(GUID effectGuid);
 
     inline bool fileSet() const    { return m_directSound8 != nullptr; }
 
@@ -102,6 +128,12 @@ private:
 	bool				m_dataFillingEnds;
 	HANDLE				m_threadHandle;
 	IAudioEndNotify*	m_outerNotify;
+
+	///////////////////////////////////////////////////////////////////////////////////////
+	//	NOTE:
+	//		Here we can use a vector to simulate an array(WinApi use arrays) because 
+	//		c++11 standard says the element memory inside vector is allocated contiguously.
+	std::vector<DSEFFECTDESC>	m_effects;
 
 	static const unsigned s_prefilledBufferSliceCount = 1;
     static const unsigned s_secondsInBuffer = 4;

@@ -112,6 +112,7 @@ void WavPlayer::preparePlayResource()
 
 void WavPlayer::play()
 {
+	assert(fileSet());
     assert (m_soundBufferInterface != nullptr && !m_isPlaying);
 
 	//	when the buffer is created, the play cursor is set to 0 automatically,
@@ -134,6 +135,7 @@ void WavPlayer::sendProgressUpdatedSignal()
 
 void WavPlayer::stop()
 {
+	assert(fileSet());
     assert (m_soundBufferInterface != nullptr && m_isPlaying);
 
     if (m_soundBufferInterface->Stop() != DS_OK)
@@ -145,6 +147,7 @@ void WavPlayer::stop()
 
 void WavPlayer::resume()
 {
+	assert(fileSet());
     assert (m_soundBufferInterface != nullptr && !m_isPlaying);
 
 	if (m_soundBufferInterface->Play(0, 0, DSBPLAY_LOOPING) != DS_OK)
@@ -157,8 +160,8 @@ void WavPlayer::resume()
 //	`seconds` start from 0 to totalTime
 void WavPlayer::playFrom(unsigned seconds)
 {
-    assert (seconds >= 0 &&
-             seconds < m_wavFile.getAudioTime());
+	assert(fileSet());
+    assert (seconds >= 0 && seconds < m_wavFile.getAudioTime());
 
 	auto playing = isPlaying();
 
@@ -174,6 +177,7 @@ void WavPlayer::playFrom(unsigned seconds)
 //////////////////////////////////////////////////////////////////////////////////
 
 #define GET_FREQUENCY_RANGE()                           \
+	assert(fileSet());									\
     assert (m_directSound8 != nullptr);                 \
                                                         \
 	DSCAPS capabilities = { sizeof(capabilities) };		\
@@ -199,6 +203,7 @@ uint32_t WavPlayer::getFrequencyMax()
 
 uint32_t WavPlayer::getFrequency()
 {
+	assert(fileSet());
 	assert(m_soundBufferInterface != nullptr);
 
 	DWORD frequency;
@@ -212,7 +217,7 @@ uint32_t WavPlayer::getFrequency()
 
 void WavPlayer::setFrequency(uint32_t frequency)
 {
-	assert(m_directSound8 != nullptr);
+	assert(fileSet());
 	assert(m_soundBufferInterface != nullptr);
 
 	if (!(getFrequencyMin() <= frequency && frequency <= getFrequencyMax()))
@@ -226,6 +231,7 @@ void WavPlayer::setFrequency(uint32_t frequency)
 
 long WavPlayer::getChannel()
 {
+	assert(fileSet());
 	assert (m_soundBufferInterface != nullptr);
 
 	LONG channelRelative;
@@ -238,6 +244,7 @@ long WavPlayer::getChannel()
 
 void WavPlayer::setChannel(long channel)
 {
+	assert(fileSet());
 	assert(m_soundBufferInterface != nullptr);
 	assert(DSBPAN_RIGHT > 0 && DSBPAN_LEFT < 0 && 
 		   (-DSBPAN_RIGHT == DSBPAN_LEFT));
@@ -250,6 +257,7 @@ void WavPlayer::setChannel(long channel)
 
 long WavPlayer::getVolume()
 {
+	assert(fileSet());
 	assert (m_soundBufferInterface != nullptr);
 
 	LONG volume;
@@ -263,6 +271,7 @@ long WavPlayer::getVolume()
 
 void WavPlayer::setVolume(long volume)
 {
+	assert(fileSet());
 	assert (m_soundBufferInterface != nullptr);
 	assert (DSBVOLUME_MIN < 0 && DSBVOLUME_MAX == 0);
     assert (volume >= 0);
@@ -272,6 +281,76 @@ void WavPlayer::setVolume(long volume)
     auto attenuation = static_cast<LONG>(DSBVOLUME_MIN - (-volume * s_volumeUnit));
     if (m_soundBufferInterface->SetVolume(attenuation) != DS_OK)
 		throw std::exception("SetVolume error");
+}
+
+//////////////////////////////////////////////////////////////////////////////////
+
+void WavPlayer::addEffectOfType(WavEffect effectType)
+{
+	GUID effectGuids[] = {
+		GUID_DSFX_STANDARD_CHORUS,
+		GUID_DSFX_STANDARD_COMPRESSOR,
+		GUID_DSFX_STANDARD_DISTORTION,
+		GUID_DSFX_STANDARD_ECHO,
+		GUID_DSFX_STANDARD_FLANGER,
+		GUID_DSFX_STANDARD_GARGLE,
+		GUID_DSFX_STANDARD_I3DL2REVERB,
+		GUID_DSFX_STANDARD_PARAMEQ,
+		GUID_DSFX_WAVES_REVERB
+	};
+
+	for(auto& effect : m_effects)
+		if (IsEqualGUID(effect.guidDSFXClass, effectGuids[effectType]))
+			throw std::exception("Effect already set!");
+
+	addEffectToAudio(effectGuids[effectType]);
+}
+
+void WavPlayer::addEffectToAudio(GUID effectGuid)
+{
+	assert(fileSet());
+	assert(!isPlaying());
+
+	DSEFFECTDESC effectDescriptions = { 0 };
+	effectDescriptions.dwSize = sizeof(effectDescriptions);
+	effectDescriptions.dwFlags = DSFX_LOCSOFTWARE;
+	effectDescriptions.guidDSFXClass = effectGuid;
+
+	m_effects.push_back(effectDescriptions);
+}
+
+//////////////////////////////////////////////////////////////////////////////////
+
+void WavPlayer::applyEffects()
+{
+	assert(m_soundBufferInterface != nullptr);
+
+	if (m_effects.empty())
+		return;
+
+	std::vector<DWORD>	resultCodes;
+	resultCodes.reserve(m_effects.size());
+	
+	auto callResult = m_soundBufferInterface->SetFX(m_effects.size(), m_effects.data(), resultCodes.data());
+	if (callResult != DS_OK) {
+		std::string exceptionMsg("SetFX error:\n");
+
+		DWORD errorResultChecker;
+		std::string errorSubMsg;
+		if (callResult == DSERR_INVALIDPARAM) {
+			errorResultChecker = DSFXR_FAILED;
+			errorSubMsg = " failed to acquire resources\n";
+		} else {
+			errorResultChecker = DSFXR_UNKNOWN;
+			errorSubMsg = " unknown error\n";
+		}
+
+		for (int i = 0; i < resultCodes.size(); ++i)
+			if (resultCodes[i] == errorResultChecker)
+				exceptionMsg += ("No." + std::to_string(i) + errorSubMsg);
+
+		throw std::exception(exceptionMsg.c_str());
+	}
 }
 
 //////////////////////////////////////////////////////////////////////////////////
@@ -306,7 +385,8 @@ void WavPlayer::createBufferOfSeconds(unsigned seconds)
                                 DSBCAPS_LOCDEFER |
                                 DSBCAPS_CTRLVOLUME |
                                 DSBCAPS_CTRLPAN |
-                                DSBCAPS_CTRLFREQUENCY;
+                                DSBCAPS_CTRLFREQUENCY |
+								DSBCAPS_CTRLFX;
     bufferDescription.dwBufferBytes = m_secondaryBufferSize
                                     = m_wavFile.getWaveFormat().nAvgBytesPerSec * seconds;
     bufferDescription.dwReserved = 0;

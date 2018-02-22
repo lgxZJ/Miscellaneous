@@ -107,14 +107,16 @@ void MainWindow::on_openWaveButton_clicked(bool)
             updateOneForm(ui->channelLabel, ui->channelSlider, 0);
             m_wavPlayer.setChannel(0);
 
-            updateOneForm(ui->frequencyLabel, ui->frequencySlider, m_wavPlayer.getFrequency());
-
+			//	set minimium value also emit `valueChanged` signal, block signals first
+			ui->frequencySlider->blockSignals(true);
             ui->frequencySlider->setMinimum(m_wavPlayer.getFrequencyMin());
             ui->frequencySlider->setMaximum(m_wavPlayer.getFrequencyMax());
-            ui->frequencySlider->setValue(m_wavPlayer.getFrequency());
+			ui->frequencySlider->blockSignals(false);
+
             ui->frequencyHeader->setText(QString("Frequency(%1~%2)")
                                             .arg(m_wavPlayer.getFrequencyMin())
                                             .arg(m_wavPlayer.getFrequencyMax()));
+			updateOneForm(ui->frequencyLabel, ui->frequencySlider, m_wavPlayer.getFrequency());
         }
         catch (std::exception& exception) {
             QMessageBox::warning(this, "Player error", exception.what());

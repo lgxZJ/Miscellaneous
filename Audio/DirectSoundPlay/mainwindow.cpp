@@ -89,34 +89,8 @@ void MainWindow::on_openWaveButton_clicked(bool)
         try {
             m_wavPlayer.setFile(filePath.toStdWString(), reinterpret_cast<HWND>(this->winId()));		
 
-            auto totalTime = m_wavPlayer.getAudioTotalTime();
-            ui->playingTimeSlider->setMinimum(0);
-            ui->playingTimeSlider->setMaximum(totalTime);
-
-            ui->currentTimeLabel->setText(QString("CurrentTime:0s"));
-            ui->totalTimeLabel->setText(QString("TotalTime:%1s").arg(totalTime));
-
-            ui->playButton->setEnabled(true);
-            ui->playButton->setText("Play");
-            ui->stopButton->setEnabled(false);
-
-            //  update related UIs
-            updateOneForm(ui->volumeLabel, ui->volumeSlider, 100);
-            m_wavPlayer.setVolume(100);
-
-            updateOneForm(ui->channelLabel, ui->channelSlider, 0);
-            m_wavPlayer.setChannel(0);
-
-			//	set minimium value also emit `valueChanged` signal, block signals first
-			ui->frequencySlider->blockSignals(true);
-            ui->frequencySlider->setMinimum(m_wavPlayer.getFrequencyMin());
-            ui->frequencySlider->setMaximum(m_wavPlayer.getFrequencyMax());
-			ui->frequencySlider->blockSignals(false);
-
-            ui->frequencyHeader->setText(QString("Frequency(%1~%2)")
-                                            .arg(m_wavPlayer.getFrequencyMin())
-                                            .arg(m_wavPlayer.getFrequencyMax()));
-			updateOneForm(ui->frequencyLabel, ui->frequencySlider, m_wavPlayer.getFrequency());
+            updateInitialAudioBasicControlUis();
+            updateInitialEffectChorusUis();
         }
         catch (std::exception& exception) {
             QMessageBox::warning(this, "Player error", exception.what());
@@ -124,10 +98,83 @@ void MainWindow::on_openWaveButton_clicked(bool)
     }
 }
 
+void MainWindow::updateInitialAudioBasicControlUis()
+{
+    auto totalTime = m_wavPlayer.getAudioTotalTime();
+    ui->playingTimeSlider->setMinimum(0);
+    ui->playingTimeSlider->setMaximum(totalTime);
+
+    ui->currentTimeLabel->setText(QString("CurrentTime:0s"));
+    ui->totalTimeLabel->setText(QString("TotalTime:%1s").arg(totalTime));
+
+    ui->playButton->setEnabled(true);
+    ui->playButton->setText("Play");
+    ui->stopButton->setEnabled(false);
+
+    updateOneForm(ui->volumeLabel, ui->volumeSlider, 100);
+    m_wavPlayer.setVolume(100);
+
+    updateOneForm(ui->channelLabel, ui->channelSlider, 0);
+    m_wavPlayer.setChannel(0);
+
+    //	set minimium value also emit `valueChanged` signal, block signals first
+    ui->frequencySlider->blockSignals(true);
+    ui->frequencySlider->setMinimum(m_wavPlayer.getFrequencyMin());
+    ui->frequencySlider->setMaximum(m_wavPlayer.getFrequencyMax());
+    ui->frequencySlider->blockSignals(false);
+
+    ui->frequencyHeader->setText(QString("Frequency(%1~%2)")
+                                    .arg(m_wavPlayer.getFrequencyMin())
+                                    .arg(m_wavPlayer.getFrequencyMax()));
+    updateOneForm(ui->frequencyLabel, ui->frequencySlider, m_wavPlayer.getFrequency());
+}
+
+void MainWindow::updateInitialEffectChorusUis()
+{
+    //  set effect related sliders
+    m_wavPlayer.addEffectOfType(WavPlayer::Chorus);
+    m_wavPlayer.applyEffects();
+    auto& baseController = m_wavPlayer.getEffectController(WavPlayer::Chorus);
+    auto chorusController = dynamic_cast<EffectChorus*>(&baseController);
+    assert(chorusController != nullptr);
+
+    auto wetDryRange = EffectChorus::getWetDryRadioRange();
+    updateOneForm(ui->wetDryLabel, ui->wetDrySlider, wetDryRange.m_min, wetDryRange.m_max, chorusController->getParams().fWetDryMix);
+
+    auto depthRange = EffectChorus::getDepthRange();
+    updateOneForm(ui->depthLabel, ui->depthSlider, depthRange.m_min, depthRange.m_max, chorusController->getParams().fDepth);
+
+    auto feedbackRange = EffectChorus::getFeedbackRange();
+    updateOneForm(ui->feedbackLabel, ui->feedbackSlider, feedbackRange.m_min, feedbackRange.m_max, chorusController->getParams().fFeedback);
+
+    auto chorusFrequencyRange = EffectChorus::getFrequencyRange();
+    updateOneForm(ui->chorusFreqneucyLabel, ui->chorusFrequencySlider, chorusFrequencyRange.m_min, chorusFrequencyRange.m_max, chorusController->getParams().fFrequency);
+
+    auto delayRange = EffectChorus::getDelayRange();
+    updateOneForm(ui->delayLabel, ui->delaySlider, delayRange.m_min, delayRange.m_max, chorusController->getParams().fDelay);
+
+    ui->sinRadio->setChecked(chorusController->getParams().lWaveform == EffectChorus::Sin);
+    ui->triangleRadio->setChecked(chorusController->getParams().lWaveform == EffectChorus::Triangle);
+
+    ui->neg90Radio->setChecked(chorusController->getParams().lPhase == EffectChorus::Neg90);
+    ui->neg180Radio->setChecked(chorusController->getParams().lPhase == EffectChorus::Neg180);
+    ui->zeroRadio->setChecked(chorusController->getParams().lPhase == EffectChorus::Zero);
+    ui->pos90Radio->setChecked(chorusController->getParams().lPhase == EffectChorus::Pos90);
+    ui->pos180Radio->setChecked(chorusController->getParams().lPhase == EffectChorus::Pos180);
+}
+
 void MainWindow::updateOneForm(QLabel* label, QSlider* slider, int value)
 {
     label->setText(QString::number(value));
     slider->setValue(value);
+}
+
+void MainWindow::updateOneForm(QLabel *label, QSlider *slider, int min, int max, int current)
+{
+    slider->setMinimum(min);
+    slider->setMaximum(max);
+    slider->setValue(current);
+    label->setText(label->text() + QString("(%1)").arg(static_cast<int>(current)));
 }
 
 void MainWindow::on_playButton_clicked(bool)
@@ -144,6 +191,14 @@ void MainWindow::on_playButton_clicked(bool)
         ui->volumeSlider->setEnabled(true);
         ui->channelSlider->setEnabled(true);
         ui->frequencySlider->setEnabled(true);
+
+        ui->wetDrySlider->setEnabled(true);
+        ui->feedbackSlider->setEnabled(true);
+        ui->depthSlider->setEnabled(true);
+        ui->chorusFrequencySlider->setEnabled(true);
+        ui->delaySlider->setEnabled(true);
+        ui->waveformTypesGroupBox->setEnabled(true);
+        ui->phaseTypeGroupBox->setEnabled(true);
 	}
 	catch (std::exception& exception) {
 		QMessageBox::warning(this, "stop error", exception.what());

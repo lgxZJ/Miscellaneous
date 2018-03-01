@@ -3,6 +3,12 @@
 #include <QtGlobal>
 
 #include <cassert>
+#include <map>
+#include <unordered_map>
+#include <functional>
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 WavPlayer::WavPlayer()
 	: m_wavFile()
@@ -287,7 +293,16 @@ void WavPlayer::setVolume(long volume)
 
 void WavPlayer::addEffectOfType(WavEffect effectType)
 {
-	GUID effectGuids[] = {
+	for(auto& effect : m_effects)
+		if (IsEqualGUID(effect.guidDSFXClass, mapEffectTypeToGuid(effectType)))
+			throw std::exception("Effect already set!");
+
+	addEffectToAudio(mapEffectTypeToGuid(effectType));
+}
+
+GUID WavPlayer::mapEffectTypeToGuid(WavEffect effectType)
+{
+	static GUID effectGuids[] = {
 		GUID_DSFX_STANDARD_CHORUS,
 		GUID_DSFX_STANDARD_COMPRESSOR,
 		GUID_DSFX_STANDARD_DISTORTION,
@@ -299,11 +314,7 @@ void WavPlayer::addEffectOfType(WavEffect effectType)
 		GUID_DSFX_WAVES_REVERB
 	};
 
-	for(auto& effect : m_effects)
-		if (IsEqualGUID(effect.guidDSFXClass, effectGuids[effectType]))
-			throw std::exception("Effect already set!");
-
-	addEffectToAudio(effectGuids[effectType]);
+	return effectGuids[effectType];
 }
 
 void WavPlayer::addEffectToAudio(GUID effectGuid)
@@ -345,12 +356,66 @@ void WavPlayer::applyEffects()
 			errorSubMsg = " unknown error\n";
 		}
 
-		for (int i = 0; i < resultCodes.size(); ++i)
+		for (unsigned i = 0; i < resultCodes.size(); ++i)
 			if (resultCodes[i] == errorResultChecker)
 				exceptionMsg += ("No." + std::to_string(i) + errorSubMsg);
 
 		throw std::exception(exceptionMsg.c_str());
 	}
+
+	for (unsigned i = 0; i < m_effects.size(); ++i)
+		constructEffectObject( m_effects[i].guidDSFXClass, i );
+}
+
+void WavPlayer::constructEffectObject( const GUID& guid, unsigned guidIndex )
+{
+	using InnerHasher = std::function<std::size_t( const GUID& )>;
+	using InnerPredicator = std::function<bool( const GUID&, const GUID& )>;
+
+	auto hasher = []( const GUID& ){ return 0; };
+	auto equaler = []( const GUID& guidOne, const GUID& guidTwo ){ return static_cast<bool>(IsEqualGUID( guidOne, guidTwo )); };
+
+	std::unordered_map<GUID, GUID, InnerHasher, InnerPredicator> interfaceGuidMaps( 9, hasher, equaler );
+	interfaceGuidMaps[GUID_DSFX_STANDARD_CHORUS] = IID_IDirectSoundFXChorus8;
+	interfaceGuidMaps[GUID_DSFX_STANDARD_DISTORTION] = IID_IDirectSoundFXDistortion8;
+	interfaceGuidMaps[GUID_DSFX_STANDARD_ECHO] = IID_IDirectSoundFXEcho8;
+	interfaceGuidMaps[GUID_DSFX_STANDARD_FLANGER] = IID_IDirectSoundFXFlanger8;
+	interfaceGuidMaps[GUID_DSFX_STANDARD_GARGLE] = IID_IDirectSoundFXGargle8;
+	interfaceGuidMaps[GUID_DSFX_STANDARD_I3DL2REVERB] = IID_IDirectSoundFXI3DL2Reverb8;
+	interfaceGuidMaps[GUID_DSFX_STANDARD_PARAMEQ] = IID_IDirectSoundFXParamEq8;
+	interfaceGuidMaps[GUID_DSFX_WAVES_REVERB] = IID_IDirectSoundFXWavesReverb8;
+
+	/*{
+	{ GUID_DSFX_STANDARD_CHORUS,		IID_IDirectSoundFXChorus8 },
+	{ GUID_DSFX_STANDARD_COMPRESSOR,	IID_IDirectSoundFXCompressor8 },
+	{ GUID_DSFX_STANDARD_DISTORTION,	IID_IDirectSoundFXDistortion8 },
+	{ GUID_DSFX_STANDARD_ECHO,			IID_IDirectSoundFXEcho8 },
+	{ GUID_DSFX_STANDARD_FLANGER,		IID_IDirectSoundFXFlanger8 },
+	{ GUID_DSFX_STANDARD_GARGLE,		IID_IDirectSoundFXGargle8 },
+	{ GUID_DSFX_STANDARD_I3DL2REVERB,	IID_IDirectSoundFXI3DL2Reverb8 },
+	{ GUID_DSFX_STANDARD_PARAMEQ,		IID_IDirectSoundFXParamEq8 },
+	{ GUID_DSFX_WAVES_REVERB,			IID_IDirectSoundFXWavesReverb8 },
+	};
+	*/
+	IUnknown* interfacePtr;
+	if (m_soundBufferInterface->GetObjectInPath( guid, guidIndex, interfaceGuidMaps[guid], (LPVOID*)&interfacePtr ) != DS_OK)
+		throw std::exception( "GetObjectInPath error" );
+
+	m_effectControllers.emplace_back( new EffectChorus( interfacePtr ) );
+}
+
+//////////////////////////////////////////////////////////////////////////////////
+
+EffectBase& WavPlayer::getEffectController(WavEffect effectType)
+{
+	assert(m_soundBufferInterface != nullptr);
+	assert( m_effectControllers.size() == m_effects.size() );
+
+	for (unsigned i = 0; i < m_effects.size(); ++i)
+		if (IsEqualGUID( m_effects[i].guidDSFXClass, mapEffectTypeToGuid( effectType ) ))
+			return *m_effectControllers[i];
+
+	throw std::exception("effect not added and applyed");
 }
 
 //////////////////////////////////////////////////////////////////////////////////

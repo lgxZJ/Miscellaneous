@@ -35,6 +35,9 @@ private slots:
     void on_frequencySlider_valueChanged(int value);
 
     void updateOneForm(QLabel* label, QSlider* slider, int value);
+    void updateOneForm(QLabel* label, QSlider* slider, int min, int max, int current);
+    void updateInitialAudioBasicControlUis();
+    void updateInitialEffectChorusUis();
 
 private:
     Ui::MainWindow *ui;

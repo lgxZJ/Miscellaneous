@@ -199,7 +199,7 @@
          <item>
           <widget class="QLabel" name="wetDryLabel">
            <property name="text">
-            <string>Wet/Dry radio</string>
+            <string>WetDry</string>
            </property>
           </widget>
          </item>
@@ -353,7 +353,7 @@
        <item row="0" column="3">
         <layout class="QVBoxLayout" name="verticalLayout_11">
          <item>
-          <widget class="QLabel" name="chorusFreqneucyLabel">
+          <widget class="QLabel" name="chorusFrequencyLabel">
            <property name="text">
             <string>Frequency</string>
            </property>
@@ -464,7 +464,7 @@
           <item row="0" column="0">
            <widget class="QRadioButton" name="sinRadio">
             <property name="enabled">
-             <bool>false</bool>
+             <bool>true</bool>
             </property>
             <property name="text">
              <string>Sin</string>

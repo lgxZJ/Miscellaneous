@@ -30,9 +30,24 @@ private slots:
     void on_playButton_clicked(bool);
 	void on_stopButton_clicked(bool);
     void on_playingTimeSlider_sliderReleased();
+
     void on_volumeSlider_valueChanged(int value);
     void on_channelSlider_valueChanged(int value);
     void on_frequencySlider_valueChanged(int value);
+
+    void on_wetDrySlider_valueChanged(int value);
+    void on_depthSlider_valueChanged(int value);
+    void on_feedbackSlider_valueChanged(int value);
+    void on_chorusFrequencySlider_valueChanged(int value);
+    void on_delaySlider_valueChanged(int value);
+    void on_sinRadio_clicked(bool checked);
+    void on_triangleRadio_clicked(bool checked);
+    void on_neg90Radio_clicked(bool checked);
+    void on_neg180Radio_clicked(bool checked);
+    void on_zeroRadio_clicked(bool checked);
+    void on_pos90Radio_clicked(bool checked);
+    void on_pos180Radio_clicked(bool checked);
+
 
     void updateOneForm(QLabel* label, QSlider* slider, int value);
     void updateOneForm(QLabel* label, QSlider* slider, int min, int max, int current);

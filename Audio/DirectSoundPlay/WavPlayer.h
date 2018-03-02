@@ -59,9 +59,9 @@ public:
             throw std::exception("GetAllParameters");
 	}
 	
-	//////////////////////////////
-	//	NOTE:	While change effects, the sound buffer must be stopped!
-	////////////////////////////////////////////////////////////////////
+    /////////////////////////////////////////
+    //	NOTE:	While change effects, the sound buffer must be stopped and not locked!!!
+    /////////////////////////////////////////////////////////////////////////////////////
 	static ValueRange		getWetDryRadioRange() 	{ return ValueRange( DSFXCHORUS_WETDRYMIX_MIN, DSFXCHORUS_WETDRYMIX_MAX ); }
 	static ValueRange		getDepthRange() 		{ return ValueRange( DSFXCHORUS_DEPTH_MIN, DSFXCHORUS_DEPTH_MAX ); }
 	static ValueRange		getFeedbackRange() 		{ return ValueRange( DSFXCHORUS_FEEDBACK_MIN, DSFXCHORUS_FEEDBACK_MAX ); }

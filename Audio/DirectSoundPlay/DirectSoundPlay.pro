@@ -16,9 +16,14 @@ SOURCES += main.cpp\
         mainwindow.cpp \
     WavFile.cpp \
     WavPlayer.cpp
+    WavFile.cpp
+    WavPlayer.cpp
 
 HEADERS  += mainwindow.h \
+    WavException.h \
     WavFile.h \
+    WavPlayer.h
+    WavFile.h
     WavPlayer.h
 
 FORMS    += mainwindow.ui

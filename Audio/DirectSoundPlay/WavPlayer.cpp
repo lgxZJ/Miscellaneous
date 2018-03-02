@@ -66,6 +66,9 @@ void WavPlayer::cleanResources(WavPlayer::CleanOption option)
 		m_directSound8->Release(),
 		m_directSound8 = nullptr;
 
+    m_effects.clear();
+    m_effectControllers.clear();
+
 	if (m_notifyCount > 0) {
 		for (unsigned i = 0; i < m_notifyCount; ++i)
 			if (m_notifyHandles != nullptr && m_notifyHandles[i] != nullptr)
@@ -183,12 +186,12 @@ void WavPlayer::playFrom(unsigned seconds)
 //////////////////////////////////////////////////////////////////////////////////
 
 #define GET_FREQUENCY_RANGE()                           \
-	assert(fileSet());									\
+    assert(fileSet());                                  \
     assert (m_directSound8 != nullptr);                 \
                                                         \
-	DSCAPS capabilities = { sizeof(capabilities) };		\
+        DSCAPS capabilities = { sizeof(capabilities) }; \
     if (m_directSound8->GetCaps(&capabilities) != DS_OK)\
-        throw std::exception("GetCaps error");          \
+        throw std::exception("GetCaps error");
 
 
 uint32_t WavPlayer::getFrequencyMin()

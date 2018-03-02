@@ -148,7 +148,7 @@ void MainWindow::updateInitialEffectChorusUis()
     updateOneForm(ui->feedbackLabel, ui->feedbackSlider, feedbackRange.m_min, feedbackRange.m_max, chorusController->getParams().fFeedback);
 
     auto chorusFrequencyRange = EffectChorus::getFrequencyRange();
-    updateOneForm(ui->chorusFreqneucyLabel, ui->chorusFrequencySlider, chorusFrequencyRange.m_min, chorusFrequencyRange.m_max, chorusController->getParams().fFrequency);
+    updateOneForm(ui->chorusFrequencyLabel, ui->chorusFrequencySlider, chorusFrequencyRange.m_min, chorusFrequencyRange.m_max, chorusController->getParams().fFrequency);
 
     auto delayRange = EffectChorus::getDelayRange();
     updateOneForm(ui->delayLabel, ui->delaySlider, delayRange.m_min, delayRange.m_max, chorusController->getParams().fDelay);
@@ -171,10 +171,14 @@ void MainWindow::updateOneForm(QLabel* label, QSlider* slider, int value)
 
 void MainWindow::updateOneForm(QLabel *label, QSlider *slider, int min, int max, int current)
 {
+    slider->blockSignals(true);
+
     slider->setMinimum(min);
     slider->setMaximum(max);
     slider->setValue(current);
     label->setText(label->text() + QString("(%1)").arg(static_cast<int>(current)));
+
+    slider->blockSignals(false);
 }
 
 void MainWindow::on_playButton_clicked(bool)
@@ -262,3 +266,62 @@ void MainWindow::on_frequencySlider_valueChanged(int value)
         QMessageBox::warning(this, "setFrequency error", exception.what());
     }
 }
+
+////////////////////////////////////////////////////////////////////////////////////
+
+#define CHANGE_SLIDER_EFFECT_PARAM(sliderName, labelName, paramName, baseLabelString)                           \
+    void MainWindow::on_##sliderName##_valueChanged(int value)                                                  \
+    {                                                                                                           \
+        try {                                                                                                   \
+            m_wavPlayer.stop();                                                                                 \
+                                                                                                                \
+            auto controller = dynamic_cast<EffectChorus&>(m_wavPlayer.getEffectController(WavPlayer::Chorus));  \
+            auto params = controller.getParams();                                                               \
+            params.paramName = value;                                                                           \
+            controller.setParams(params);                                                                       \
+                                                                                                                \
+            m_wavPlayer.resume();                                                                               \
+                                                                                                                \
+            ui->labelName->setText(QString(#baseLabelString "(%1)").arg(value));                                \
+        } catch (std::exception& exception) {                                                                   \
+            QMessageBox::warning(this, QString(#baseLabelString) + QString(" change error"), exception.what()); \
+        }                                                                                                       \
+    }
+
+CHANGE_SLIDER_EFFECT_PARAM(wetDrySlider,           wetDryLabel,            fWetDryMix, WetDry)
+CHANGE_SLIDER_EFFECT_PARAM(depthSlider,            depthLabel,             fDepth,     Depth)
+CHANGE_SLIDER_EFFECT_PARAM(feedbackSlider,         feedbackLabel,          fFeedback,  Feedback)
+CHANGE_SLIDER_EFFECT_PARAM(chorusFrequencySlider,  chorusFrequencyLabel,   fFeedback,  Frequency)
+CHANGE_SLIDER_EFFECT_PARAM(delaySlider,            delayLabel,             fFeedback,  Delay)
+
+#undef CHANGE_EFFECT_PARAM
+
+//////////////////////////////////////////////////////////////////////////
+
+#define CHANGE_RADIO_EFFECT_PARAM(radioButtonName, paramName, paramValue, errorString)                          \
+    void MainWindow::on_##radioButtonName##_clicked(bool checked)                                               \
+    {                                                                                                           \
+        if (checked == false)                                                                                   \
+            return;                                                                                             \
+                                                                                                                \
+        try {                                                                                                   \
+            m_wavPlayer.stop();                                                                                 \
+                                                                                                                \
+            auto controller = dynamic_cast<EffectChorus&>(m_wavPlayer.getEffectController(WavPlayer::Chorus));  \
+            auto params = controller.getParams();                                                               \
+            params.paramName = paramValue;                                                                      \
+            controller.setParams(params);                                                                       \
+                                                                                                                \
+            m_wavPlayer.resume();                                                                               \
+        } catch (std::exception& exception) {                                                                   \
+            QMessageBox::warning(this, #errorString, exception.what());                                         \
+        }                                                                                                       \
+    }
+
+CHANGE_RADIO_EFFECT_PARAM(sinRadio,     lWaveform,  DSFXCHORUS_WAVE_SIN,        SinWaveformChangeError)
+CHANGE_RADIO_EFFECT_PARAM(triangleRadio,lWaveform,  DSFXCHORUS_WAVE_TRIANGLE,   TriangleWaveformChangeError)
+CHANGE_RADIO_EFFECT_PARAM(neg90Radio,   lPhase,     DSFXCHORUS_PHASE_NEG_90,    Neg90PhaseChangeError)
+CHANGE_RADIO_EFFECT_PARAM(neg180Radio,  lPhase,     DSFXCHORUS_PHASE_NEG_180,   Neg180PhaseChangeError)
+CHANGE_RADIO_EFFECT_PARAM(zeroRadio,    lPhase,     DSFXCHORUS_PHASE_ZERO,      ZeroPhaseChangeError)
+CHANGE_RADIO_EFFECT_PARAM(pos90Radio,   lPhase,     DSFXCHORUS_PHASE_90,        Pos90PhaseChangeError)
+CHANGE_RADIO_EFFECT_PARAM(pos180Radio,   lPhase,     DSFXCHORUS_PHASE_180,       Pos180PhaseChangeError)

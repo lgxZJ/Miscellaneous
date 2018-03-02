@@ -378,28 +378,20 @@ void WavPlayer::constructEffectObject( const GUID& guid, unsigned guidIndex )
 	auto hasher = []( const GUID& ){ return 0; };
 	auto equaler = []( const GUID& guidOne, const GUID& guidTwo ){ return static_cast<bool>(IsEqualGUID( guidOne, guidTwo )); };
 
-	std::unordered_map<GUID, GUID, InnerHasher, InnerPredicator> interfaceGuidMaps( 9, hasher, equaler );
-	interfaceGuidMaps[GUID_DSFX_STANDARD_CHORUS] = IID_IDirectSoundFXChorus8;
-	interfaceGuidMaps[GUID_DSFX_STANDARD_DISTORTION] = IID_IDirectSoundFXDistortion8;
-	interfaceGuidMaps[GUID_DSFX_STANDARD_ECHO] = IID_IDirectSoundFXEcho8;
-	interfaceGuidMaps[GUID_DSFX_STANDARD_FLANGER] = IID_IDirectSoundFXFlanger8;
-	interfaceGuidMaps[GUID_DSFX_STANDARD_GARGLE] = IID_IDirectSoundFXGargle8;
-	interfaceGuidMaps[GUID_DSFX_STANDARD_I3DL2REVERB] = IID_IDirectSoundFXI3DL2Reverb8;
-	interfaceGuidMaps[GUID_DSFX_STANDARD_PARAMEQ] = IID_IDirectSoundFXParamEq8;
-	interfaceGuidMaps[GUID_DSFX_WAVES_REVERB] = IID_IDirectSoundFXWavesReverb8;
+    std::unordered_map<GUID, GUID, InnerHasher, InnerPredicator> interfaceGuidMaps(
+        {
+            { GUID_DSFX_STANDARD_CHORUS,		IID_IDirectSoundFXChorus8 },
+            { GUID_DSFX_STANDARD_COMPRESSOR,	IID_IDirectSoundFXCompressor8 },
+            { GUID_DSFX_STANDARD_DISTORTION,	IID_IDirectSoundFXDistortion8 },
+            { GUID_DSFX_STANDARD_ECHO,			IID_IDirectSoundFXEcho8 },
+            { GUID_DSFX_STANDARD_FLANGER,		IID_IDirectSoundFXFlanger8 },
+            { GUID_DSFX_STANDARD_GARGLE,		IID_IDirectSoundFXGargle8 },
+            { GUID_DSFX_STANDARD_I3DL2REVERB,	IID_IDirectSoundFXI3DL2Reverb8 },
+            { GUID_DSFX_STANDARD_PARAMEQ,		IID_IDirectSoundFXParamEq8 },
+            { GUID_DSFX_WAVES_REVERB,			IID_IDirectSoundFXWavesReverb8 },
+        },
+        9, hasher, equaler );
 
-	/*{
-	{ GUID_DSFX_STANDARD_CHORUS,		IID_IDirectSoundFXChorus8 },
-	{ GUID_DSFX_STANDARD_COMPRESSOR,	IID_IDirectSoundFXCompressor8 },
-	{ GUID_DSFX_STANDARD_DISTORTION,	IID_IDirectSoundFXDistortion8 },
-	{ GUID_DSFX_STANDARD_ECHO,			IID_IDirectSoundFXEcho8 },
-	{ GUID_DSFX_STANDARD_FLANGER,		IID_IDirectSoundFXFlanger8 },
-	{ GUID_DSFX_STANDARD_GARGLE,		IID_IDirectSoundFXGargle8 },
-	{ GUID_DSFX_STANDARD_I3DL2REVERB,	IID_IDirectSoundFXI3DL2Reverb8 },
-	{ GUID_DSFX_STANDARD_PARAMEQ,		IID_IDirectSoundFXParamEq8 },
-	{ GUID_DSFX_WAVES_REVERB,			IID_IDirectSoundFXWavesReverb8 },
-	};
-	*/
 	IUnknown* interfacePtr;
 	if (m_soundBufferInterface->GetObjectInPath( guid, guidIndex, interfaceGuidMaps[guid], (LPVOID*)&interfacePtr ) != DS_OK)
 		throw std::exception( "GetObjectInPath error" );

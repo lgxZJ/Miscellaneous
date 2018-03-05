@@ -20,8 +20,14 @@ void DragableGraphicsPixmapItem::mouseMoveEvent(QGraphicsSceneMouseEvent* event)
 {
     if (m_pressed) {
         auto drag = new QDrag((QObject*)event->widget());
-        drag->setMimeData(new QMimeData());
-        drag->start();
+
+        auto mimeData = new QMimeData();
+        mimeData->setText(QString::number(qulonglong(this)));
+        drag->setMimeData(mimeData);
+
+        drag->setDragCursor(this->pixmap().scaled(this->pixmap().width() / 2, this->pixmap().height() / 2), Qt::MoveAction);
+
+        drag->exec(Qt::MoveAction);
     }
 
     QGraphicsPixmapItem::mousePressEvent(event);

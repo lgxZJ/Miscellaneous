@@ -27,5 +27,8 @@ MainWindow::MainWindow(QWidget *parent) :
     m_layout.setRowStretch(2, 1);
     m_layout.setRowStretch(3, 0);
 
+    m_layout.setVerticalSpacing(2);
+    m_layout.setHorizontalSpacing(2);
+
     centralWidget()->setLayout(&m_layout);
 }

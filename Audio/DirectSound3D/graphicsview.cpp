@@ -3,6 +3,7 @@
 #include <QMouseEvent>
 #include <QTransform>
 #include <QDrag>
+#include <QMimeData>
 
 #include <QDebug>
 
@@ -20,9 +21,6 @@ GraphicsView::GraphicsView(QWidget* parent)
     m_scene.addItem(destinationItem);
 
     setScene(&m_scene);
-
-    qDebug() << size();
-    qDebug() << geometry();
 }
 
 void GraphicsView::bindView(QGraphicsView* view, GraphicsView::CornerType type)
@@ -48,10 +46,39 @@ void GraphicsView::resizeEvent(QResizeEvent *event)
             viewRect = QRectF(QPoint(0, (geometry().top() + geometry().bottom()) / 2), geometry().size() / 2);
         if (viewPair.first == GraphicsView::RightBottom)
             viewRect = QRectF(QPoint(geometry().width() / 2, geometry().height() / 2), geometry().size() / 2);
-    qDebug() << viewRect << viewPair.second;
+
+        viewPair.second->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+        viewPair.second->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+
+        viewPair.second->resize(viewRect.size().toSize() + QSize(2, 2));
+         qDebug() << viewRect << viewPair.second->size();
         viewPair.second->setSceneRect(viewRect);
     }
 
     QGraphicsView::resizeEvent(event);
 }
+
+void GraphicsView::dragEnterEvent(QDragEnterEvent *event)
+{
+    event->accept();
+}
+
+void GraphicsView::dropEvent(QDropEvent *event)
+{
+    DragableGraphicsPixmapItem* item = reinterpret_cast<DragableGraphicsPixmapItem*>
+            (event->mimeData()->text().toULongLong());
+    item->setPos(event->pos());
+
+    event->accept();
+}
+
+void GraphicsView::dragMoveEvent(QDragMoveEvent *event)
+{
+    //  May not call the implementation in super class which
+    //  delivers the event into QGraphicsScene and do not accept
+    //  drag move events itself.
+    event->accept();
+}
+
+
 

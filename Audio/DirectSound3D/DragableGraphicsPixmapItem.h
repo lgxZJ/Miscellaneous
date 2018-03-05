@@ -3,6 +3,7 @@
 
 #include <QGraphicsPixmapItem>
 #include <QCursor>
+#include <QDebug>
 
 class DragableGraphicsPixmapItem : public QGraphicsPixmapItem
 {
@@ -12,6 +13,7 @@ public:
         , m_pressed(false)
     {
         setCursor(QCursor(Qt::PointingHandCursor));
+        setFlags(QGraphicsItem::ItemIsMovable | QGraphicsItem::ItemIsFocusable);
         setAcceptDrops(false);
     }
 

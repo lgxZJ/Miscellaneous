@@ -24,10 +24,10 @@ private:
     QGridLayout             m_layout;
 
     GraphicsView            m_wholeView;
-    QGraphicsView           m_leftTopView;
-    QGraphicsView           m_rightTopView;
-    QGraphicsView           m_leftBottomView;
-    QGraphicsView           m_rightBottomView;
+    GraphicsView           m_leftTopView;
+    GraphicsView           m_rightTopView;
+    GraphicsView           m_leftBottomView;
+    GraphicsView           m_rightBottomView;
 
     QGroupBox               m_paramGroup;
 };

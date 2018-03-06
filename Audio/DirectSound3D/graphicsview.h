@@ -14,13 +14,21 @@ public:
 
     GraphicsView(QWidget* parent = nullptr);
 
-    void bindView(QGraphicsView* view, CornerType type);
+    void bindView(GraphicsView* view, CornerType type);
+
+    void enableTransforms(bool enabled) { m_enableTransforms = enabled; }
+    void setSizeHint(const QSize& size) { m_sizeHint = size; }
 
 protected:
     void resizeEvent(QResizeEvent *event) override;
+
     void dragEnterEvent(QDragEnterEvent *event) override;
     void dragMoveEvent(QDragMoveEvent *event) override;
     void dropEvent(QDropEvent *event) override;
+
+    void mousePressEvent(QMouseEvent *event) override;
+
+    QSize sizeHint() const override { return m_sizeHint; }
 
 private:
     QGraphicsPixmapItem*    m_holdingItem;
@@ -29,7 +37,9 @@ private:
     QGraphicsPixmapItem     m_destination;
 
     QGraphicsScene          m_scene;
-    std::vector<std::pair<CornerType, QGraphicsView*>> m_bindedViews;
+    QSize                   m_sizeHint;
+    bool                    m_enableTransforms;
+    std::vector<std::pair<CornerType, GraphicsView*>> m_bindedViews;
 };
 
 #endif // GRAPHICSVIEW_H

@@ -10,6 +10,7 @@
 GraphicsView::GraphicsView(QWidget* parent)
     : QGraphicsView(parent)
     , m_holdingItem(nullptr)
+    , m_enableTransforms(true)
 {
     auto sourceItem = new DragableGraphicsPixmapItem(QPixmap("../source.jpg"));
     sourceItem->setToolTip("Sound Source(drag to move)");
@@ -21,37 +22,36 @@ GraphicsView::GraphicsView(QWidget* parent)
     m_scene.addItem(destinationItem);
 
     setScene(&m_scene);
+    setTransformationAnchor(QGraphicsView::NoAnchor);
+    m_sizeHint = QGraphicsView::sizeHint();
+    updateGeometry();
 }
 
-void GraphicsView::bindView(QGraphicsView* view, GraphicsView::CornerType type)
+void GraphicsView::bindView(GraphicsView* view, GraphicsView::CornerType type)
 {
+    view->setAcceptDrops(false);
     view->setScene(&m_scene);
     m_bindedViews.emplace_back(std::make_pair(type, view));
 }
 
 void GraphicsView::resizeEvent(QResizeEvent *event)
 {
-    Q_ASSERT(m_bindedViews.size() <= 4);
-
-    qDebug() << event->size();
     m_scene.setSceneRect(QRect(QPoint(0, 0), event->size()));
 
     for (auto viewPair : m_bindedViews) {
         QRectF viewRect;
         if (viewPair.first == GraphicsView::LeftTop)
-            viewRect = QRectF(QPoint(0, 0), geometry().size() / 2);
+            viewRect = QRectF(QPoint(0, 0), event->size() / 2);
         if (viewPair.first == GraphicsView::RightTop)
-            viewRect = QRectF(QPoint((geometry().left() + geometry().right()) / 2, 0), geometry().size() / 2);
+            viewRect = QRectF(QPoint(event->size().width() / 2, 0), event->size() / 2);
         if (viewPair.first == GraphicsView::LeftBottom)
-            viewRect = QRectF(QPoint(0, (geometry().top() + geometry().bottom()) / 2), geometry().size() / 2);
+            viewRect = QRectF(QPoint(0, event->size().height() / 2), event->size() / 2);
         if (viewPair.first == GraphicsView::RightBottom)
-            viewRect = QRectF(QPoint(geometry().width() / 2, geometry().height() / 2), geometry().size() / 2);
+            viewRect = QRectF(QPoint(event->size().width() / 2, event->size().height() / 2), event->size() / 2);
 
         viewPair.second->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
         viewPair.second->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 
-        viewPair.second->resize(viewRect.size().toSize() + QSize(2, 2));
-         qDebug() << viewRect << viewPair.second->size();
         viewPair.second->setSceneRect(viewRect);
     }
 
@@ -72,9 +72,22 @@ void GraphicsView::dropEvent(QDropEvent *event)
     event->accept();
 }
 
+void GraphicsView::mousePressEvent(QMouseEvent *event)
+{
+    if (m_enableTransforms) {
+        switch (event->button()) {
+        case Qt::LeftButton:    this->scale(1.1, 1.1);      break;
+        case Qt::MiddleButton:  this->resetTransform();     break;
+        case Qt::RightButton:   this->translate(10, 10);    break;
+        }
+    }
+
+    QGraphicsView::mousePressEvent(event);
+}
+
 void GraphicsView::dragMoveEvent(QDragMoveEvent *event)
 {
-    //  May not call the implementation in super class which
+    //  May not call the implementation of super class which
     //  delivers the event into QGraphicsScene and do not accept
     //  drag move events itself.
     event->accept();

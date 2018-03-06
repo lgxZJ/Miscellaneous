@@ -10,6 +10,9 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
 
+    m_wholeView.setMinimumSize({460, 210});
+    m_wholeView.enableTransforms(false);
+
     m_wholeView.bindView(&m_leftTopView, GraphicsView::LeftTop);
     m_wholeView.bindView(&m_rightTopView, GraphicsView::RightTop);
     m_wholeView.bindView(&m_leftBottomView, GraphicsView::LeftBottom);
@@ -27,8 +30,8 @@ MainWindow::MainWindow(QWidget *parent) :
     m_layout.setRowStretch(2, 1);
     m_layout.setRowStretch(3, 0);
 
-    m_layout.setVerticalSpacing(2);
-    m_layout.setHorizontalSpacing(2);
+    m_layout.setVerticalSpacing(0);
+    m_layout.setHorizontalSpacing(0);
 
     centralWidget()->setLayout(&m_layout);
 }

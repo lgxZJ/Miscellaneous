@@ -15,10 +15,14 @@ DESTDIR = $$PWD/build
 SOURCES += main.cpp\
         mainwindow.cpp \
     graphicsview.cpp \
-    DragableGraphicsPixmapItem.cpp
+    DragableGraphicsPixmapItem.cpp \
+    WavFile.cpp \
+    WavPlayer.cpp
 
 HEADERS  += mainwindow.h \
     graphicsview.h \
-    DragableGraphicsPixmapItem.h
+    DragableGraphicsPixmapItem.h \
+    WavFile.h \
+    WavPlayer.h
 
 FORMS    += mainwindow.ui

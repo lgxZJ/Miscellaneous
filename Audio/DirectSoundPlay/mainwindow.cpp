@@ -91,6 +91,7 @@ void MainWindow::on_openWaveButton_clicked(bool)
 
             updateInitialAudioBasicControlUis();
             updateInitialEffectChorusUis();
+            updateInitial3dUis();
         }
         catch (std::exception& exception) {
             QMessageBox::warning(this, "Player error", exception.what());
@@ -115,7 +116,8 @@ void MainWindow::updateInitialAudioBasicControlUis()
     m_wavPlayer.setVolume(100);
 
     updateOneForm(ui->channelLabel, ui->channelSlider, 0);
-    m_wavPlayer.setChannel(0);
+	if (!m_wavPlayer.supportsEffect3D())
+		m_wavPlayer.setChannel(0);
 
     //	set minimium value also emit `valueChanged` signal, block signals first
     ui->frequencySlider->blockSignals(true);
@@ -163,6 +165,28 @@ void MainWindow::updateInitialEffectChorusUis()
     ui->pos180Radio->setChecked(chorusController->getParams().lPhase == EffectChorus::Pos180);
 }
 
+void MainWindow::updateInitial3dUis()
+{
+#define SET_RANGE(widgetName, rangeMin, rangeMax)  \
+    ui->widgetName->blockSignals(true);            \
+    ui->widgetName->setRange(rangeMin, rangeMax);  \
+    ui->widgetName->blockSignals(false);
+
+    SET_RANGE(minDistance, 0, 100);
+    SET_RANGE(maxDistance, 100, 1000);
+    SET_RANGE(posX, 0, 100);
+    SET_RANGE(posY, 0, 100);
+    SET_RANGE(coneAnglesInside, 1, 180);
+    SET_RANGE(coneAnglesOutside, 1, 180);
+    SET_RANGE(coneOrientationX, 0, 50);
+    SET_RANGE(coneOrientationY, 0, 50);
+    SET_RANGE(coneOrientationZ, 0, 50);
+    SET_RANGE(coneOutsideVolume, -100, 0);
+    SET_RANGE(volecity, 0, 100);
+
+#undef SET_RANGE
+}
+
 void MainWindow::updateOneForm(QLabel* label, QSlider* slider, int value)
 {
     label->setText(QString::number(value));
@@ -206,6 +230,7 @@ void MainWindow::on_playButton_clicked(bool)
 
         if (m_wavPlayer.supportsEffect3D())
             m_wavPlayer.enableEffect3D(true),
+			ui->channelSlider->setEnabled(false),
             ui->sourceGroupBox->setEnabled(true);
 	}
 	catch (std::exception& exception) {

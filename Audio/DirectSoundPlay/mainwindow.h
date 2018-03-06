@@ -53,6 +53,7 @@ private slots:
     void updateOneForm(QLabel* label, QSlider* slider, int min, int max, int current);
     void updateInitialAudioBasicControlUis();
     void updateInitialEffectChorusUis();
+    void updateInitial3dUis();
 
     void on_minDistance_valueChanged(int value);
 

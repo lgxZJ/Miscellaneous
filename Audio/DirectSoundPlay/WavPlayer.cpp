@@ -63,16 +63,16 @@ void WavPlayer::cleanResources(WavPlayer::CleanOption option)
 	m_dataFillingEnds = false;
 
 	//	no need to release secondary buffer, device object do it
+	if (m_3dSourceInterface != nullptr)
+		m_3dSourceInterface->Release(),
+		m_3dSourceInterface = nullptr;
+	if (m_3dListenerInterface != nullptr)
+		m_3dListenerInterface->Release(),
+		m_3dListenerInterface = nullptr;
+	if (m_soundBufferInterface != nullptr)
+		m_soundBufferInterface->Release(),
+		m_soundBufferInterface = nullptr;
 	if (m_directSound8 != nullptr)
-        m_soundBufferInterface->Release(),
-        m_soundBufferInterface = nullptr,
-
-        m_3dSourceInterface->Release(),
-        m_3dSourceInterface = nullptr,
-
-        m_3dListenerInterface->Release(),
-        m_3dListenerInterface = nullptr,
-
 		m_directSound8->Release(),
         m_directSound8 = nullptr;
 
@@ -474,16 +474,18 @@ void WavPlayer::createBufferOfSeconds(unsigned seconds)
                                 DSBCAPS_GETCURRENTPOSITION2 |
                                 DSBCAPS_LOCDEFER |
                                 DSBCAPS_CTRLVOLUME |
-                                DSBCAPS_CTRLPAN |
                                 DSBCAPS_CTRLFREQUENCY |
-                                DSBCAPS_CTRLFX |
-                                DSBCAPS_CTRL3D |
-                                DSBCAPS_PRIMARYBUFFER;
+                                DSBCAPS_CTRLFX;
     bufferDescription.dwBufferBytes = m_secondaryBufferSize
                                     = m_wavFile.getWaveFormat().nAvgBytesPerSec * seconds;
     bufferDescription.dwReserved = 0;
 	bufferDescription.lpwfxFormat = &m_wavFile.getWaveFormat();
     bufferDescription.guid3DAlgorithm = GUID_NULL;
+
+	if (supportsEffect3D())
+		bufferDescription.dwFlags |= DSBCAPS_CTRL3D;
+	else
+		bufferDescription.dwFlags |= DSBCAPS_CTRLPAN;
 
     IDirectSoundBuffer* soundBuffer;
     if (m_directSound8->CreateSoundBuffer(&bufferDescription, &soundBuffer, NULL) != DS_OK) {
@@ -494,8 +496,17 @@ void WavPlayer::createBufferOfSeconds(unsigned seconds)
         throw std::exception("IDirectSoundBuffer8 interface not supported!");
     if (m_soundBufferInterface->QueryInterface(IID_IDirectSound3DBuffer,(LPVOID*)&m_3dSourceInterface) != DS_OK)
         throw std::exception("IDirectSound3DBuffer get error");
-	if (m_soundBufferInterface->QueryInterface(IID_IDirectSound3DListener8, (LPVOID*)&m_3dListenerInterface) != DS_OK)
+
+	IDirectSoundBuffer*	primaryBufferInterface;
+	DSBUFFERDESC des = {0};
+	des.dwSize = sizeof(bufferDescription);
+	des.dwFlags = DSBCAPS_CTRL3D | DSBCAPS_PRIMARYBUFFER;
+
+	if (m_directSound8->CreateSoundBuffer(&des, &primaryBufferInterface, NULL) != DS_OK)
+		throw std::exception("Get Primary Buffer Interface for 3d listener error");
+	if (primaryBufferInterface->QueryInterface(IID_IDirectSound3DListener8, (LPVOID*)&m_3dListenerInterface) != DS_OK)
         throw std::exception("IID_IDirectSound3DListener8 error");
+	primaryBufferInterface->Release();
 }
 
 void WavPlayer::prefillDataIntoBuffer()

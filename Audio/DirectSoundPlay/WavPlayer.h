@@ -120,6 +120,11 @@ public:
     void resume		();
 	void playFrom	(unsigned seconds);
 
+    bool supportsEffect3D();
+    void enableEffect3D(bool ifEnable);
+    IDirectSound3DBuffer*		get3DSource()   { return m_3dSourceInterface; }
+    IDirectSound3DListener8*	get3DListener() { return m_3dListenerInterface; }
+
     uint32_t getFrequencyMin();
     uint32_t getFrequencyMax();
     uint32_t getFrequency();
@@ -171,6 +176,8 @@ private:
 	unsigned				m_bufferSliceCount;
     IDirectSound8*          m_directSound8;
     IDirectSoundBuffer8*    m_soundBufferInterface;
+    IDirectSound3DBuffer8*  m_3dSourceInterface;
+    IDirectSound3DListener8* m_3dListenerInterface;
 
 	bool			m_quitDataFillingThread;
     bool            m_isPlaying;

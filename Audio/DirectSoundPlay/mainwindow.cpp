@@ -203,6 +203,10 @@ void MainWindow::on_playButton_clicked(bool)
         ui->delaySlider->setEnabled(true);
         ui->waveformTypesGroupBox->setEnabled(true);
         ui->phaseTypeGroupBox->setEnabled(true);
+
+        if (m_wavPlayer.supportsEffect3D())
+            m_wavPlayer.enableEffect3D(true),
+            ui->sourceGroupBox->setEnabled(true);
 	}
 	catch (std::exception& exception) {
 		QMessageBox::warning(this, "stop error", exception.what());
@@ -324,4 +328,61 @@ CHANGE_RADIO_EFFECT_PARAM(neg90Radio,   lPhase,     DSFXCHORUS_PHASE_NEG_90,    
 CHANGE_RADIO_EFFECT_PARAM(neg180Radio,  lPhase,     DSFXCHORUS_PHASE_NEG_180,   Neg180PhaseChangeError)
 CHANGE_RADIO_EFFECT_PARAM(zeroRadio,    lPhase,     DSFXCHORUS_PHASE_ZERO,      ZeroPhaseChangeError)
 CHANGE_RADIO_EFFECT_PARAM(pos90Radio,   lPhase,     DSFXCHORUS_PHASE_90,        Pos90PhaseChangeError)
-CHANGE_RADIO_EFFECT_PARAM(pos180Radio,   lPhase,     DSFXCHORUS_PHASE_180,       Pos180PhaseChangeError)
+CHANGE_RADIO_EFFECT_PARAM(pos180Radio,  lPhase,     DSFXCHORUS_PHASE_180,       Pos180PhaseChangeError)
+
+void MainWindow::on_minDistance_valueChanged(int value)
+{
+    if (m_wavPlayer.get3DSource()->SetMinDistance(value, DS3D_IMMEDIATE) != DS_OK)
+        throw std::exception("SetMinDistance error");
+
+}
+
+void MainWindow::on_maxDistance_valueChanged(int value)
+{
+
+}
+
+void MainWindow::on_posX_valueChanged(int value)
+{
+
+}
+
+void MainWindow::on_posY_valueChanged(int value)
+{
+
+}
+
+void MainWindow::on_coneAnglesInside_valueChanged(int value)
+{
+
+}
+
+void MainWindow::on_coneAnglesOutside_valueChanged(int value)
+{
+
+}
+
+void MainWindow::on_coneOrientationX_valueChanged(int value)
+{
+
+}
+
+void MainWindow::on_coneOrientationY_valueChanged(int value)
+{
+
+}
+
+void MainWindow::on_coneOrientationZ_valueChanged(int value)
+{
+
+}
+
+void MainWindow::on_coneOutsideVolume_valueChanged(int value)
+{
+
+}
+
+void MainWindow::on_volecity_valueChanged(int value)
+{
+
+}

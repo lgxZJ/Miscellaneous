@@ -7,7 +7,6 @@
 #include <unordered_map>
 #include <functional>
 
-
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 WavPlayer::WavPlayer()
@@ -15,6 +14,8 @@ WavPlayer::WavPlayer()
 	, m_windowHandle(NULL)
 	, m_directSound8(nullptr)
     , m_soundBufferInterface(nullptr)
+    , m_3dSourceInterface(nullptr)
+    , m_3dListenerInterface(nullptr)
     , m_nextDataToPlay(nullptr)
 	, m_notifyOffsets(nullptr)
 	, m_notifyHandles(nullptr)
@@ -63,8 +64,17 @@ void WavPlayer::cleanResources(WavPlayer::CleanOption option)
 
 	//	no need to release secondary buffer, device object do it
 	if (m_directSound8 != nullptr)
+        m_soundBufferInterface->Release(),
+        m_soundBufferInterface = nullptr,
+
+        m_3dSourceInterface->Release(),
+        m_3dSourceInterface = nullptr,
+
+        m_3dListenerInterface->Release(),
+        m_3dListenerInterface = nullptr,
+
 		m_directSound8->Release(),
-		m_directSound8 = nullptr;
+        m_directSound8 = nullptr;
 
     m_effects.clear();
     m_effectControllers.clear();
@@ -181,6 +191,26 @@ void WavPlayer::playFrom(unsigned seconds)
     preparePlayResource();
 
     if (playing)	play();
+}
+
+//////////////////////////////////////////////////////////////////////////////////
+
+bool WavPlayer::supportsEffect3D()
+{
+    assert (fileSet());
+
+    return m_wavFile.getWaveFormat().nChannels == 1;
+}
+
+//////////////////////////////////////////////////////////////////////////////////
+
+void WavPlayer::enableEffect3D(bool ifEnable)
+{
+    assert (m_soundBufferInterface);
+
+    DWORD mode = ifEnable ? DS3DMODE_HEADRELATIVE : DS3DMODE_NORMAL;
+    if (m_3dSourceInterface->SetMode(mode, DS3D_IMMEDIATE) != DS_OK)
+        throw std::exception("SetMode error");
 }
 
 //////////////////////////////////////////////////////////////////////////////////
@@ -446,7 +476,9 @@ void WavPlayer::createBufferOfSeconds(unsigned seconds)
                                 DSBCAPS_CTRLVOLUME |
                                 DSBCAPS_CTRLPAN |
                                 DSBCAPS_CTRLFREQUENCY |
-								DSBCAPS_CTRLFX;
+                                DSBCAPS_CTRLFX |
+                                DSBCAPS_CTRL3D |
+                                DSBCAPS_PRIMARYBUFFER;
     bufferDescription.dwBufferBytes = m_secondaryBufferSize
                                     = m_wavFile.getWaveFormat().nAvgBytesPerSec * seconds;
     bufferDescription.dwReserved = 0;
@@ -458,10 +490,12 @@ void WavPlayer::createBufferOfSeconds(unsigned seconds)
         throw std::exception("create secondary buffer failed:CreateSoundBuffer");
     }
 
-    if (soundBuffer->QueryInterface(IID_IDirectSoundBuffer8, (LPVOID*)&m_soundBufferInterface)
-            != S_OK) {
+    if (soundBuffer->QueryInterface(IID_IDirectSoundBuffer8, (LPVOID*)&m_soundBufferInterface) != S_OK)
         throw std::exception("IDirectSoundBuffer8 interface not supported!");
-    }
+    if (m_soundBufferInterface->QueryInterface(IID_IDirectSound3DBuffer,(LPVOID*)&m_3dSourceInterface) != DS_OK)
+        throw std::exception("IDirectSound3DBuffer get error");
+	if (m_soundBufferInterface->QueryInterface(IID_IDirectSound3DListener8, (LPVOID*)&m_3dListenerInterface) != DS_OK)
+        throw std::exception("IID_IDirectSound3DListener8 error");
 }
 
 void WavPlayer::prefillDataIntoBuffer()

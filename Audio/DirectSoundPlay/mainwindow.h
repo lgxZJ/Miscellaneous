@@ -54,6 +54,28 @@ private slots:
     void updateInitialAudioBasicControlUis();
     void updateInitialEffectChorusUis();
 
+    void on_minDistance_valueChanged(int value);
+
+    void on_maxDistance_valueChanged(int value);
+
+    void on_posX_valueChanged(int value);
+
+    void on_posY_valueChanged(int value);
+
+    void on_coneAnglesInside_valueChanged(int value);
+
+    void on_coneAnglesOutside_valueChanged(int value);
+
+    void on_coneOrientationX_valueChanged(int value);
+
+    void on_coneOrientationY_valueChanged(int value);
+
+    void on_coneOrientationZ_valueChanged(int value);
+
+    void on_coneOutsideVolume_valueChanged(int value);
+
+    void on_volecity_valueChanged(int value);
+
 private:
     Ui::MainWindow *ui;
 

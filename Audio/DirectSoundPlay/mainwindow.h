@@ -56,26 +56,49 @@ private slots:
     void updateInitial3dUis();
 
     void on_minDistance_valueChanged(int value);
-
     void on_maxDistance_valueChanged(int value);
-
     void on_posX_valueChanged(int value);
-
     void on_posY_valueChanged(int value);
-
+	void on_posZ_valueChanged(int value);
     void on_coneAnglesInside_valueChanged(int value);
-
     void on_coneAnglesOutside_valueChanged(int value);
-
     void on_coneOrientationX_valueChanged(int value);
-
     void on_coneOrientationY_valueChanged(int value);
-
     void on_coneOrientationZ_valueChanged(int value);
-
     void on_coneOutsideVolume_valueChanged(int value);
+    void on_volecityX_valueChanged(int value);
+	void on_volecityY_valueChanged(int value);
+	void on_volecityZ_valueChanged(int value);
 
-    void on_volecity_valueChanged(int value);
+    void on_distanceFactor_valueChanged(int value);
+
+    void on_rolloffFactor_valueChanged(int value);
+
+    void on_dopplerFactor_valueChanged(int value);
+
+    void on_orientationFrontX_valueChanged(int value);
+
+    void on_orientationFrontY_valueChanged(int value);
+
+    void on_orientationFrontZ_valueChanged(int value);
+
+    void on_orientationTopX_valueChanged(int value);
+
+    void on_orientationTopY_valueChanged(int value);
+
+    void on_orientationTopZ_valueChanged(int value);
+
+    void on_listenerPosX_valueChanged(int value);
+
+    void on_listenerPosY_valueChanged(int value);
+
+    void on_listenerPosZ_valueChanged(int value);
+
+    void on_listenerVolecityX_valueChanged(int value);
+
+    void on_listenerVolecityY_valueChanged(int value);
+
+    void on_listenerVolecityZ_valueChanged(int value);
 
 private:
     Ui::MainWindow *ui;

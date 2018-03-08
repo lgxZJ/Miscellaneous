@@ -480,7 +480,7 @@ void WavPlayer::createBufferOfSeconds(unsigned seconds)
                                     = m_wavFile.getWaveFormat().nAvgBytesPerSec * seconds;
     bufferDescription.dwReserved = 0;
 	bufferDescription.lpwfxFormat = &m_wavFile.getWaveFormat();
-    bufferDescription.guid3DAlgorithm = GUID_NULL;
+    bufferDescription.guid3DAlgorithm = GUID_NULL ;
 
 	if (supportsEffect3D())
 		bufferDescription.dwFlags |= DSBCAPS_CTRL3D;
@@ -500,10 +500,12 @@ void WavPlayer::createBufferOfSeconds(unsigned seconds)
 	IDirectSoundBuffer*	primaryBufferInterface;
 	DSBUFFERDESC des = {0};
 	des.dwSize = sizeof(bufferDescription);
-	des.dwFlags = DSBCAPS_CTRL3D | DSBCAPS_PRIMARYBUFFER;
+    des.dwFlags = DSBCAPS_CTRL3D |
+            DSBCAPS_PRIMARYBUFFER;
 
 	if (m_directSound8->CreateSoundBuffer(&des, &primaryBufferInterface, NULL) != DS_OK)
 		throw std::exception("Get Primary Buffer Interface for 3d listener error");
+    //primaryBufferInterface->Play(0, 0, 0);
 	if (primaryBufferInterface->QueryInterface(IID_IDirectSound3DListener8, (LPVOID*)&m_3dListenerInterface) != DS_OK)
         throw std::exception("IID_IDirectSound3DListener8 error");
 	primaryBufferInterface->Release();

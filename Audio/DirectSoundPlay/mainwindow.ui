@@ -6,15 +6,15 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>866</width>
-    <height>614</height>
+    <width>1958</width>
+    <height>825</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>MainWindow</string>
   </property>
   <widget class="QWidget" name="centralWidget">
-   <layout class="QGridLayout" name="gridLayout_6">
+   <layout class="QGridLayout" name="gridLayout_7">
     <item row="0" column="0">
      <layout class="QHBoxLayout" name="horizontalLayout_5">
       <item>
@@ -201,6 +201,9 @@
            <property name="text">
             <string>WetDry</string>
            </property>
+           <property name="alignment">
+            <set>Qt::AlignCenter</set>
+           </property>
           </widget>
          </item>
          <item>
@@ -255,6 +258,9 @@
            <property name="text">
             <string>Depth</string>
            </property>
+           <property name="alignment">
+            <set>Qt::AlignCenter</set>
+           </property>
           </widget>
          </item>
          <item>
@@ -305,6 +311,9 @@
           <widget class="QLabel" name="feedbackLabel">
            <property name="text">
             <string>Feedback</string>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignCenter</set>
            </property>
           </widget>
          </item>
@@ -357,6 +366,9 @@
            <property name="text">
             <string>Frequency</string>
            </property>
+           <property name="alignment">
+            <set>Qt::AlignCenter</set>
+           </property>
           </widget>
          </item>
          <item>
@@ -407,6 +419,9 @@
           <widget class="QLabel" name="delayLabel">
            <property name="text">
             <string>Delay</string>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignCenter</set>
            </property>
           </widget>
          </item>
@@ -635,7 +650,7 @@
     <item row="4" column="0">
      <widget class="QGroupBox" name="sourceGroupBox">
       <property name="enabled">
-       <bool>false</bool>
+       <bool>true</bool>
       </property>
       <property name="title">
        <string>3D Source</string>
@@ -644,7 +659,7 @@
        <item row="0" column="0">
         <layout class="QVBoxLayout" name="verticalLayout_9">
          <item>
-          <widget class="QLabel" name="wetDryLabel_2">
+          <widget class="QLabel" name="minDistanceLabel">
            <property name="text">
             <string>minDistance</string>
            </property>
@@ -668,7 +683,7 @@
            <item>
             <widget class="QSlider" name="minDistance">
              <property name="enabled">
-              <bool>false</bool>
+              <bool>true</bool>
              </property>
              <property name="orientation">
               <enum>Qt::Vertical</enum>
@@ -698,7 +713,7 @@
        <item row="0" column="1">
         <layout class="QVBoxLayout" name="verticalLayout_12">
          <item>
-          <widget class="QLabel" name="wetDryLabel_3">
+          <widget class="QLabel" name="maxDistanceLabel">
            <property name="text">
             <string>maxDistance</string>
            </property>
@@ -722,7 +737,7 @@
            <item>
             <widget class="QSlider" name="maxDistance">
              <property name="enabled">
-              <bool>false</bool>
+              <bool>true</bool>
              </property>
              <property name="orientation">
               <enum>Qt::Vertical</enum>
@@ -752,9 +767,12 @@
        <item row="0" column="2">
         <layout class="QVBoxLayout" name="verticalLayout_13">
          <item>
-          <widget class="QLabel" name="wetDryLabel_4">
+          <widget class="QLabel" name="posXLabel">
            <property name="text">
             <string>posX</string>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignCenter</set>
            </property>
           </widget>
          </item>
@@ -776,7 +794,7 @@
            <item>
             <widget class="QSlider" name="posX">
              <property name="enabled">
-              <bool>false</bool>
+              <bool>true</bool>
              </property>
              <property name="orientation">
               <enum>Qt::Vertical</enum>
@@ -806,9 +824,12 @@
        <item row="0" column="3">
         <layout class="QVBoxLayout" name="verticalLayout_14">
          <item>
-          <widget class="QLabel" name="wetDryLabel_5">
+          <widget class="QLabel" name="posYLabel">
            <property name="text">
             <string>posY</string>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignCenter</set>
            </property>
           </widget>
          </item>
@@ -830,7 +851,7 @@
            <item>
             <widget class="QSlider" name="posY">
              <property name="enabled">
-              <bool>false</bool>
+              <bool>true</bool>
              </property>
              <property name="orientation">
               <enum>Qt::Vertical</enum>
@@ -858,9 +879,66 @@
         </layout>
        </item>
        <item row="0" column="4">
+        <layout class="QVBoxLayout" name="verticalLayout_20">
+         <item>
+          <widget class="QLabel" name="posZLabel">
+           <property name="text">
+            <string>posZ</string>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignCenter</set>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <layout class="QHBoxLayout" name="horizontalLayout_19">
+           <item>
+            <spacer name="horizontalSpacer_27">
+             <property name="orientation">
+              <enum>Qt::Horizontal</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>0</width>
+               <height>0</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+           <item>
+            <widget class="QSlider" name="posZ">
+             <property name="enabled">
+              <bool>true</bool>
+             </property>
+             <property name="orientation">
+              <enum>Qt::Vertical</enum>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <spacer name="horizontalSpacer_28">
+             <property name="orientation">
+              <enum>Qt::Horizontal</enum>
+             </property>
+             <property name="sizeType">
+              <enum>QSizePolicy::Expanding</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>0</width>
+               <height>0</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+          </layout>
+         </item>
+        </layout>
+       </item>
+       <item row="0" column="5">
         <layout class="QVBoxLayout" name="verticalLayout_15">
          <item>
-          <widget class="QLabel" name="wetDryLabel_6">
+          <widget class="QLabel" name="coneAnglesInsideLabel">
            <property name="text">
             <string>coneAnglesInside</string>
            </property>
@@ -884,7 +962,7 @@
            <item>
             <widget class="QSlider" name="coneAnglesInside">
              <property name="enabled">
-              <bool>false</bool>
+              <bool>true</bool>
              </property>
              <property name="orientation">
               <enum>Qt::Vertical</enum>
@@ -911,10 +989,10 @@
          </item>
         </layout>
        </item>
-       <item row="0" column="5">
+       <item row="0" column="6">
         <layout class="QVBoxLayout" name="verticalLayout_16">
          <item>
-          <widget class="QLabel" name="wetDryLabel_7">
+          <widget class="QLabel" name="coneAnglesOutsideLabel">
            <property name="text">
             <string>coneAnglesOutside</string>
            </property>
@@ -938,7 +1016,7 @@
            <item>
             <widget class="QSlider" name="coneAnglesOutside">
              <property name="enabled">
-              <bool>false</bool>
+              <bool>true</bool>
              </property>
              <property name="orientation">
               <enum>Qt::Vertical</enum>
@@ -965,10 +1043,10 @@
          </item>
         </layout>
        </item>
-       <item row="0" column="6">
+       <item row="0" column="7">
         <layout class="QVBoxLayout" name="verticalLayout_18">
          <item>
-          <widget class="QLabel" name="wetDryLabel_8">
+          <widget class="QLabel" name="coneOrientationXLabel">
            <property name="text">
             <string>coneOrientationX</string>
            </property>
@@ -992,7 +1070,7 @@
            <item>
             <widget class="QSlider" name="coneOrientationX">
              <property name="enabled">
-              <bool>false</bool>
+              <bool>true</bool>
              </property>
              <property name="orientation">
               <enum>Qt::Vertical</enum>
@@ -1019,10 +1097,10 @@
          </item>
         </layout>
        </item>
-       <item row="0" column="7">
+       <item row="0" column="8">
         <layout class="QVBoxLayout" name="verticalLayout_19">
          <item>
-          <widget class="QLabel" name="wetDryLabel_9">
+          <widget class="QLabel" name="coneOrientationYLabel">
            <property name="text">
             <string>coneOrientationY</string>
            </property>
@@ -1046,7 +1124,7 @@
            <item>
             <widget class="QSlider" name="coneOrientationY">
              <property name="enabled">
-              <bool>false</bool>
+              <bool>true</bool>
              </property>
              <property name="orientation">
               <enum>Qt::Vertical</enum>
@@ -1073,10 +1151,10 @@
          </item>
         </layout>
        </item>
-       <item row="0" column="8">
+       <item row="0" column="9">
         <layout class="QVBoxLayout" name="verticalLayout_28">
          <item>
-          <widget class="QLabel" name="wetDryLabel_18">
+          <widget class="QLabel" name="coneOrientationZLabel">
            <property name="text">
             <string>coneOrientationZ</string>
            </property>
@@ -1100,7 +1178,7 @@
            <item>
             <widget class="QSlider" name="coneOrientationZ">
              <property name="enabled">
-              <bool>false</bool>
+              <bool>true</bool>
              </property>
              <property name="orientation">
               <enum>Qt::Vertical</enum>
@@ -1127,10 +1205,10 @@
          </item>
         </layout>
        </item>
-       <item row="0" column="9">
+       <item row="0" column="10">
         <layout class="QVBoxLayout" name="verticalLayout_30">
          <item>
-          <widget class="QLabel" name="wetDryLabel_20">
+          <widget class="QLabel" name="coneOutsideVolumeLabel">
            <property name="text">
             <string>coneOutsideVolume</string>
            </property>
@@ -1154,7 +1232,7 @@
            <item>
             <widget class="QSlider" name="coneOutsideVolume">
              <property name="enabled">
-              <bool>false</bool>
+              <bool>true</bool>
              </property>
              <property name="orientation">
               <enum>Qt::Vertical</enum>
@@ -1181,12 +1259,15 @@
          </item>
         </layout>
        </item>
-       <item row="0" column="10">
+       <item row="0" column="11">
         <layout class="QVBoxLayout" name="verticalLayout_41">
          <item>
-          <widget class="QLabel" name="wetDryLabel_31">
+          <widget class="QLabel" name="volecityXLabel">
            <property name="text">
-            <string>volecity</string>
+            <string>volecityX</string>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignCenter</set>
            </property>
           </widget>
          </item>
@@ -1206,9 +1287,9 @@
             </spacer>
            </item>
            <item>
-            <widget class="QSlider" name="volecity">
+            <widget class="QSlider" name="volecityX">
              <property name="enabled">
-              <bool>false</bool>
+              <bool>true</bool>
              </property>
              <property name="orientation">
               <enum>Qt::Vertical</enum>
@@ -1235,634 +1316,988 @@
          </item>
         </layout>
        </item>
+       <item row="0" column="12">
+        <layout class="QVBoxLayout" name="verticalLayout_42">
+         <item>
+          <widget class="QLabel" name="volecityYLabel">
+           <property name="text">
+            <string>volecityY</string>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignCenter</set>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <layout class="QHBoxLayout" name="horizontalLayout_41">
+           <item>
+            <spacer name="horizontalSpacer_71">
+             <property name="orientation">
+              <enum>Qt::Horizontal</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>0</width>
+               <height>0</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+           <item>
+            <widget class="QSlider" name="volecityY">
+             <property name="enabled">
+              <bool>true</bool>
+             </property>
+             <property name="orientation">
+              <enum>Qt::Vertical</enum>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <spacer name="horizontalSpacer_72">
+             <property name="orientation">
+              <enum>Qt::Horizontal</enum>
+             </property>
+             <property name="sizeType">
+              <enum>QSizePolicy::Expanding</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>0</width>
+               <height>0</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+          </layout>
+         </item>
+        </layout>
+       </item>
+       <item row="0" column="13">
+        <layout class="QVBoxLayout" name="verticalLayout_43">
+         <item>
+          <widget class="QLabel" name="volecityZLabel">
+           <property name="text">
+            <string>volecityZ</string>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignCenter</set>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <layout class="QHBoxLayout" name="horizontalLayout_42">
+           <item>
+            <spacer name="horizontalSpacer_73">
+             <property name="orientation">
+              <enum>Qt::Horizontal</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>0</width>
+               <height>0</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+           <item>
+            <widget class="QSlider" name="volecityZ">
+             <property name="enabled">
+              <bool>true</bool>
+             </property>
+             <property name="orientation">
+              <enum>Qt::Vertical</enum>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <spacer name="horizontalSpacer_74">
+             <property name="orientation">
+              <enum>Qt::Horizontal</enum>
+             </property>
+             <property name="sizeType">
+              <enum>QSizePolicy::Expanding</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>0</width>
+               <height>0</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+          </layout>
+         </item>
+        </layout>
+       </item>
       </layout>
      </widget>
     </item>
     <item row="5" column="0">
-     <widget class="QGroupBox" name="groupBox_2">
+     <widget class="QGroupBox" name="listenerGroupBox">
+      <property name="enabled">
+       <bool>true</bool>
+      </property>
       <property name="title">
        <string>3D Listener</string>
       </property>
-      <widget class="QWidget" name="layoutWidget_19">
-       <property name="geometry">
-        <rect>
-         <x>20</x>
-         <y>20</y>
-         <width>90</width>
-         <height>110</height>
-        </rect>
-       </property>
-       <layout class="QVBoxLayout" name="verticalLayout_31">
-        <item>
-         <widget class="QLabel" name="wetDryLabel_21">
-          <property name="text">
-           <string>minDistance</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <layout class="QHBoxLayout" name="horizontalLayout_30">
-          <item>
-           <spacer name="horizontalSpacer_49">
-            <property name="orientation">
-             <enum>Qt::Horizontal</enum>
-            </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>0</width>
-              <height>0</height>
-             </size>
-            </property>
-           </spacer>
-          </item>
-          <item>
-           <widget class="QSlider" name="wetDrySlider_21">
-            <property name="enabled">
-             <bool>false</bool>
-            </property>
-            <property name="orientation">
-             <enum>Qt::Vertical</enum>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <spacer name="horizontalSpacer_50">
-            <property name="orientation">
-             <enum>Qt::Horizontal</enum>
-            </property>
-            <property name="sizeType">
-             <enum>QSizePolicy::Expanding</enum>
-            </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>0</width>
-              <height>0</height>
-             </size>
-            </property>
-           </spacer>
-          </item>
-         </layout>
-        </item>
-       </layout>
-      </widget>
-      <widget class="QWidget" name="layoutWidget_20">
-       <property name="geometry">
-        <rect>
-         <x>120</x>
-         <y>20</y>
-         <width>90</width>
-         <height>110</height>
-        </rect>
-       </property>
-       <layout class="QVBoxLayout" name="verticalLayout_32">
-        <item>
-         <widget class="QLabel" name="wetDryLabel_22">
-          <property name="text">
-           <string>minDistance</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <layout class="QHBoxLayout" name="horizontalLayout_31">
-          <item>
-           <spacer name="horizontalSpacer_51">
-            <property name="orientation">
-             <enum>Qt::Horizontal</enum>
-            </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>0</width>
-              <height>0</height>
-             </size>
-            </property>
-           </spacer>
-          </item>
-          <item>
-           <widget class="QSlider" name="wetDrySlider_22">
-            <property name="enabled">
-             <bool>false</bool>
-            </property>
-            <property name="orientation">
-             <enum>Qt::Vertical</enum>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <spacer name="horizontalSpacer_52">
-            <property name="orientation">
-             <enum>Qt::Horizontal</enum>
-            </property>
-            <property name="sizeType">
-             <enum>QSizePolicy::Expanding</enum>
-            </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>0</width>
-              <height>0</height>
-             </size>
-            </property>
-           </spacer>
-          </item>
-         </layout>
-        </item>
-       </layout>
-      </widget>
-      <widget class="QWidget" name="layoutWidget_21">
-       <property name="geometry">
-        <rect>
-         <x>220</x>
-         <y>20</y>
-         <width>90</width>
-         <height>110</height>
-        </rect>
-       </property>
-       <layout class="QVBoxLayout" name="verticalLayout_33">
-        <item>
-         <widget class="QLabel" name="wetDryLabel_23">
-          <property name="text">
-           <string>minDistance</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <layout class="QHBoxLayout" name="horizontalLayout_32">
-          <item>
-           <spacer name="horizontalSpacer_53">
-            <property name="orientation">
-             <enum>Qt::Horizontal</enum>
-            </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>0</width>
-              <height>0</height>
-             </size>
-            </property>
-           </spacer>
-          </item>
-          <item>
-           <widget class="QSlider" name="wetDrySlider_23">
-            <property name="enabled">
-             <bool>false</bool>
-            </property>
-            <property name="orientation">
-             <enum>Qt::Vertical</enum>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <spacer name="horizontalSpacer_54">
-            <property name="orientation">
-             <enum>Qt::Horizontal</enum>
-            </property>
-            <property name="sizeType">
-             <enum>QSizePolicy::Expanding</enum>
-            </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>0</width>
-              <height>0</height>
-             </size>
-            </property>
-           </spacer>
-          </item>
-         </layout>
-        </item>
-       </layout>
-      </widget>
-      <widget class="QWidget" name="layoutWidget_22">
-       <property name="geometry">
-        <rect>
-         <x>320</x>
-         <y>20</y>
-         <width>90</width>
-         <height>110</height>
-        </rect>
-       </property>
-       <layout class="QVBoxLayout" name="verticalLayout_34">
-        <item>
-         <widget class="QLabel" name="wetDryLabel_24">
-          <property name="text">
-           <string>minDistance</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <layout class="QHBoxLayout" name="horizontalLayout_33">
-          <item>
-           <spacer name="horizontalSpacer_55">
-            <property name="orientation">
-             <enum>Qt::Horizontal</enum>
-            </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>0</width>
-              <height>0</height>
-             </size>
-            </property>
-           </spacer>
-          </item>
-          <item>
-           <widget class="QSlider" name="wetDrySlider_24">
-            <property name="enabled">
-             <bool>false</bool>
-            </property>
-            <property name="orientation">
-             <enum>Qt::Vertical</enum>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <spacer name="horizontalSpacer_56">
-            <property name="orientation">
-             <enum>Qt::Horizontal</enum>
-            </property>
-            <property name="sizeType">
-             <enum>QSizePolicy::Expanding</enum>
-            </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>0</width>
-              <height>0</height>
-             </size>
-            </property>
-           </spacer>
-          </item>
-         </layout>
-        </item>
-       </layout>
-      </widget>
-      <widget class="QWidget" name="layoutWidget_23">
-       <property name="geometry">
-        <rect>
-         <x>420</x>
-         <y>20</y>
-         <width>90</width>
-         <height>110</height>
-        </rect>
-       </property>
-       <layout class="QVBoxLayout" name="verticalLayout_35">
-        <item>
-         <widget class="QLabel" name="wetDryLabel_25">
-          <property name="text">
-           <string>minDistance</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <layout class="QHBoxLayout" name="horizontalLayout_34">
-          <item>
-           <spacer name="horizontalSpacer_57">
-            <property name="orientation">
-             <enum>Qt::Horizontal</enum>
-            </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>0</width>
-              <height>0</height>
-             </size>
-            </property>
-           </spacer>
-          </item>
-          <item>
-           <widget class="QSlider" name="wetDrySlider_25">
-            <property name="enabled">
-             <bool>false</bool>
-            </property>
-            <property name="orientation">
-             <enum>Qt::Vertical</enum>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <spacer name="horizontalSpacer_58">
-            <property name="orientation">
-             <enum>Qt::Horizontal</enum>
-            </property>
-            <property name="sizeType">
-             <enum>QSizePolicy::Expanding</enum>
-            </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>0</width>
-              <height>0</height>
-             </size>
-            </property>
-           </spacer>
-          </item>
-         </layout>
-        </item>
-       </layout>
-      </widget>
-      <widget class="QWidget" name="layoutWidget_24">
-       <property name="geometry">
-        <rect>
-         <x>520</x>
-         <y>20</y>
-         <width>90</width>
-         <height>110</height>
-        </rect>
-       </property>
-       <layout class="QVBoxLayout" name="verticalLayout_36">
-        <item>
-         <widget class="QLabel" name="wetDryLabel_26">
-          <property name="text">
-           <string>minDistance</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <layout class="QHBoxLayout" name="horizontalLayout_35">
-          <item>
-           <spacer name="horizontalSpacer_59">
-            <property name="orientation">
-             <enum>Qt::Horizontal</enum>
-            </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>0</width>
-              <height>0</height>
-             </size>
-            </property>
-           </spacer>
-          </item>
-          <item>
-           <widget class="QSlider" name="wetDrySlider_26">
-            <property name="enabled">
-             <bool>false</bool>
-            </property>
-            <property name="orientation">
-             <enum>Qt::Vertical</enum>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <spacer name="horizontalSpacer_60">
-            <property name="orientation">
-             <enum>Qt::Horizontal</enum>
-            </property>
-            <property name="sizeType">
-             <enum>QSizePolicy::Expanding</enum>
-            </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>0</width>
-              <height>0</height>
-             </size>
-            </property>
-           </spacer>
-          </item>
-         </layout>
-        </item>
-       </layout>
-      </widget>
-      <widget class="QWidget" name="layoutWidget_25">
-       <property name="geometry">
-        <rect>
-         <x>620</x>
-         <y>20</y>
-         <width>90</width>
-         <height>110</height>
-        </rect>
-       </property>
-       <layout class="QVBoxLayout" name="verticalLayout_37">
-        <item>
-         <widget class="QLabel" name="wetDryLabel_27">
-          <property name="text">
-           <string>minDistance</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <layout class="QHBoxLayout" name="horizontalLayout_36">
-          <item>
-           <spacer name="horizontalSpacer_61">
-            <property name="orientation">
-             <enum>Qt::Horizontal</enum>
-            </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>0</width>
-              <height>0</height>
-             </size>
-            </property>
-           </spacer>
-          </item>
-          <item>
-           <widget class="QSlider" name="wetDrySlider_27">
-            <property name="enabled">
-             <bool>false</bool>
-            </property>
-            <property name="orientation">
-             <enum>Qt::Vertical</enum>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <spacer name="horizontalSpacer_62">
-            <property name="orientation">
-             <enum>Qt::Horizontal</enum>
-            </property>
-            <property name="sizeType">
-             <enum>QSizePolicy::Expanding</enum>
-            </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>0</width>
-              <height>0</height>
-             </size>
-            </property>
-           </spacer>
-          </item>
-         </layout>
-        </item>
-       </layout>
-      </widget>
-      <widget class="QWidget" name="layoutWidget_26">
-       <property name="geometry">
-        <rect>
-         <x>720</x>
-         <y>20</y>
-         <width>90</width>
-         <height>110</height>
-        </rect>
-       </property>
-       <layout class="QVBoxLayout" name="verticalLayout_38">
-        <item>
-         <widget class="QLabel" name="wetDryLabel_28">
-          <property name="text">
-           <string>minDistance</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <layout class="QHBoxLayout" name="horizontalLayout_37">
-          <item>
-           <spacer name="horizontalSpacer_63">
-            <property name="orientation">
-             <enum>Qt::Horizontal</enum>
-            </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>0</width>
-              <height>0</height>
-             </size>
-            </property>
-           </spacer>
-          </item>
-          <item>
-           <widget class="QSlider" name="wetDrySlider_28">
-            <property name="enabled">
-             <bool>false</bool>
-            </property>
-            <property name="orientation">
-             <enum>Qt::Vertical</enum>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <spacer name="horizontalSpacer_64">
-            <property name="orientation">
-             <enum>Qt::Horizontal</enum>
-            </property>
-            <property name="sizeType">
-             <enum>QSizePolicy::Expanding</enum>
-            </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>0</width>
-              <height>0</height>
-             </size>
-            </property>
-           </spacer>
-          </item>
-         </layout>
-        </item>
-       </layout>
-      </widget>
-      <widget class="QWidget" name="layoutWidget_27">
-       <property name="geometry">
-        <rect>
-         <x>820</x>
-         <y>20</y>
-         <width>90</width>
-         <height>110</height>
-        </rect>
-       </property>
-       <layout class="QVBoxLayout" name="verticalLayout_39">
-        <item>
-         <widget class="QLabel" name="wetDryLabel_29">
-          <property name="text">
-           <string>minDistance</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <layout class="QHBoxLayout" name="horizontalLayout_38">
-          <item>
-           <spacer name="horizontalSpacer_65">
-            <property name="orientation">
-             <enum>Qt::Horizontal</enum>
-            </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>0</width>
-              <height>0</height>
-             </size>
-            </property>
-           </spacer>
-          </item>
-          <item>
-           <widget class="QSlider" name="wetDrySlider_29">
-            <property name="enabled">
-             <bool>false</bool>
-            </property>
-            <property name="orientation">
-             <enum>Qt::Vertical</enum>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <spacer name="horizontalSpacer_66">
-            <property name="orientation">
-             <enum>Qt::Horizontal</enum>
-            </property>
-            <property name="sizeType">
-             <enum>QSizePolicy::Expanding</enum>
-            </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>0</width>
-              <height>0</height>
-             </size>
-            </property>
-           </spacer>
-          </item>
-         </layout>
-        </item>
-       </layout>
-      </widget>
-      <widget class="QWidget" name="layoutWidget_28">
-       <property name="geometry">
-        <rect>
-         <x>910</x>
-         <y>20</y>
-         <width>90</width>
-         <height>110</height>
-        </rect>
-       </property>
-       <layout class="QVBoxLayout" name="verticalLayout_40">
-        <item>
-         <widget class="QLabel" name="wetDryLabel_30">
-          <property name="text">
-           <string>minDistance</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <layout class="QHBoxLayout" name="horizontalLayout_39">
-          <item>
-           <spacer name="horizontalSpacer_67">
-            <property name="orientation">
-             <enum>Qt::Horizontal</enum>
-            </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>0</width>
-              <height>0</height>
-             </size>
-            </property>
-           </spacer>
-          </item>
-          <item>
-           <widget class="QSlider" name="wetDrySlider_30">
-            <property name="enabled">
-             <bool>false</bool>
-            </property>
-            <property name="orientation">
-             <enum>Qt::Vertical</enum>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <spacer name="horizontalSpacer_68">
-            <property name="orientation">
-             <enum>Qt::Horizontal</enum>
-            </property>
-            <property name="sizeType">
-             <enum>QSizePolicy::Expanding</enum>
-            </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>0</width>
-              <height>0</height>
-             </size>
-            </property>
-           </spacer>
-          </item>
-         </layout>
-        </item>
-       </layout>
-      </widget>
+      <layout class="QGridLayout" name="gridLayout_6">
+       <item row="0" column="0">
+        <layout class="QVBoxLayout" name="verticalLayout_31">
+         <item>
+          <widget class="QLabel" name="distanceFactorLabel">
+           <property name="text">
+            <string>distanceFactor</string>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignCenter</set>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <layout class="QHBoxLayout" name="horizontalLayout_30">
+           <item>
+            <spacer name="horizontalSpacer_49">
+             <property name="orientation">
+              <enum>Qt::Horizontal</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>0</width>
+               <height>0</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+           <item>
+            <widget class="QSlider" name="distanceFactor">
+             <property name="enabled">
+              <bool>true</bool>
+             </property>
+             <property name="orientation">
+              <enum>Qt::Vertical</enum>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <spacer name="horizontalSpacer_50">
+             <property name="orientation">
+              <enum>Qt::Horizontal</enum>
+             </property>
+             <property name="sizeType">
+              <enum>QSizePolicy::Expanding</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>0</width>
+               <height>0</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+          </layout>
+         </item>
+        </layout>
+       </item>
+       <item row="0" column="1">
+        <layout class="QVBoxLayout" name="verticalLayout_32">
+         <item>
+          <widget class="QLabel" name="rolloffFactorLabel">
+           <property name="text">
+            <string>rolloffFactor</string>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignCenter</set>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <layout class="QHBoxLayout" name="horizontalLayout_31">
+           <item>
+            <spacer name="horizontalSpacer_51">
+             <property name="orientation">
+              <enum>Qt::Horizontal</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>0</width>
+               <height>0</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+           <item>
+            <widget class="QSlider" name="rolloffFactor">
+             <property name="enabled">
+              <bool>true</bool>
+             </property>
+             <property name="orientation">
+              <enum>Qt::Vertical</enum>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <spacer name="horizontalSpacer_52">
+             <property name="orientation">
+              <enum>Qt::Horizontal</enum>
+             </property>
+             <property name="sizeType">
+              <enum>QSizePolicy::Expanding</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>0</width>
+               <height>0</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+          </layout>
+         </item>
+        </layout>
+       </item>
+       <item row="0" column="2">
+        <layout class="QVBoxLayout" name="verticalLayout_33">
+         <item>
+          <widget class="QLabel" name="dopplerFactorLabel">
+           <property name="text">
+            <string>dopplerFactor</string>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignCenter</set>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <layout class="QHBoxLayout" name="horizontalLayout_32">
+           <item>
+            <spacer name="horizontalSpacer_53">
+             <property name="orientation">
+              <enum>Qt::Horizontal</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>0</width>
+               <height>0</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+           <item>
+            <widget class="QSlider" name="dopplerFactor">
+             <property name="enabled">
+              <bool>true</bool>
+             </property>
+             <property name="orientation">
+              <enum>Qt::Vertical</enum>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <spacer name="horizontalSpacer_54">
+             <property name="orientation">
+              <enum>Qt::Horizontal</enum>
+             </property>
+             <property name="sizeType">
+              <enum>QSizePolicy::Expanding</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>0</width>
+               <height>0</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+          </layout>
+         </item>
+        </layout>
+       </item>
+       <item row="0" column="3">
+        <layout class="QVBoxLayout" name="verticalLayout_34">
+         <item>
+          <widget class="QLabel" name="orientationFrontXLabel">
+           <property name="text">
+            <string>orientationFrontX</string>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignCenter</set>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <layout class="QHBoxLayout" name="horizontalLayout_33">
+           <item>
+            <spacer name="horizontalSpacer_55">
+             <property name="orientation">
+              <enum>Qt::Horizontal</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>0</width>
+               <height>0</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+           <item>
+            <widget class="QSlider" name="orientationFrontX">
+             <property name="enabled">
+              <bool>true</bool>
+             </property>
+             <property name="orientation">
+              <enum>Qt::Vertical</enum>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <spacer name="horizontalSpacer_56">
+             <property name="orientation">
+              <enum>Qt::Horizontal</enum>
+             </property>
+             <property name="sizeType">
+              <enum>QSizePolicy::Expanding</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>0</width>
+               <height>0</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+          </layout>
+         </item>
+        </layout>
+       </item>
+       <item row="0" column="4">
+        <layout class="QVBoxLayout" name="verticalLayout_35">
+         <item>
+          <widget class="QLabel" name="orientationFrontYLabel">
+           <property name="text">
+            <string>orientationFrontY</string>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignCenter</set>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <layout class="QHBoxLayout" name="horizontalLayout_34">
+           <item>
+            <spacer name="horizontalSpacer_57">
+             <property name="orientation">
+              <enum>Qt::Horizontal</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>0</width>
+               <height>0</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+           <item>
+            <widget class="QSlider" name="orientationFrontY">
+             <property name="enabled">
+              <bool>true</bool>
+             </property>
+             <property name="orientation">
+              <enum>Qt::Vertical</enum>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <spacer name="horizontalSpacer_58">
+             <property name="orientation">
+              <enum>Qt::Horizontal</enum>
+             </property>
+             <property name="sizeType">
+              <enum>QSizePolicy::Expanding</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>0</width>
+               <height>0</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+          </layout>
+         </item>
+        </layout>
+       </item>
+       <item row="0" column="5">
+        <layout class="QVBoxLayout" name="verticalLayout_36">
+         <item>
+          <widget class="QLabel" name="orientationFrontZLabel">
+           <property name="text">
+            <string>orientationFrontZ</string>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignCenter</set>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <layout class="QHBoxLayout" name="horizontalLayout_35">
+           <item>
+            <spacer name="horizontalSpacer_59">
+             <property name="orientation">
+              <enum>Qt::Horizontal</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>0</width>
+               <height>0</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+           <item>
+            <widget class="QSlider" name="orientationFrontZ">
+             <property name="enabled">
+              <bool>true</bool>
+             </property>
+             <property name="orientation">
+              <enum>Qt::Vertical</enum>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <spacer name="horizontalSpacer_60">
+             <property name="orientation">
+              <enum>Qt::Horizontal</enum>
+             </property>
+             <property name="sizeType">
+              <enum>QSizePolicy::Expanding</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>0</width>
+               <height>0</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+          </layout>
+         </item>
+        </layout>
+       </item>
+       <item row="0" column="6">
+        <layout class="QVBoxLayout" name="verticalLayout_37">
+         <item>
+          <widget class="QLabel" name="orientationTopXLabel">
+           <property name="text">
+            <string>orientationTopX</string>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignCenter</set>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <layout class="QHBoxLayout" name="horizontalLayout_36">
+           <item>
+            <spacer name="horizontalSpacer_61">
+             <property name="orientation">
+              <enum>Qt::Horizontal</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>0</width>
+               <height>0</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+           <item>
+            <widget class="QSlider" name="orientationTopX">
+             <property name="enabled">
+              <bool>true</bool>
+             </property>
+             <property name="orientation">
+              <enum>Qt::Vertical</enum>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <spacer name="horizontalSpacer_62">
+             <property name="orientation">
+              <enum>Qt::Horizontal</enum>
+             </property>
+             <property name="sizeType">
+              <enum>QSizePolicy::Expanding</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>0</width>
+               <height>0</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+          </layout>
+         </item>
+        </layout>
+       </item>
+       <item row="0" column="7">
+        <layout class="QVBoxLayout" name="verticalLayout_38">
+         <item>
+          <widget class="QLabel" name="orientationTopYLabel">
+           <property name="text">
+            <string>orientationTopY</string>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignCenter</set>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <layout class="QHBoxLayout" name="horizontalLayout_37">
+           <item>
+            <spacer name="horizontalSpacer_63">
+             <property name="orientation">
+              <enum>Qt::Horizontal</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>0</width>
+               <height>0</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+           <item>
+            <widget class="QSlider" name="orientationTopY">
+             <property name="enabled">
+              <bool>true</bool>
+             </property>
+             <property name="orientation">
+              <enum>Qt::Vertical</enum>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <spacer name="horizontalSpacer_64">
+             <property name="orientation">
+              <enum>Qt::Horizontal</enum>
+             </property>
+             <property name="sizeType">
+              <enum>QSizePolicy::Expanding</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>0</width>
+               <height>0</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+          </layout>
+         </item>
+        </layout>
+       </item>
+       <item row="0" column="8">
+        <layout class="QVBoxLayout" name="verticalLayout_39">
+         <item>
+          <widget class="QLabel" name="orientationTopZLabel">
+           <property name="text">
+            <string>orientationTopZ</string>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <layout class="QHBoxLayout" name="horizontalLayout_38">
+           <item>
+            <spacer name="horizontalSpacer_65">
+             <property name="orientation">
+              <enum>Qt::Horizontal</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>0</width>
+               <height>0</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+           <item>
+            <widget class="QSlider" name="orientationTopZ">
+             <property name="enabled">
+              <bool>true</bool>
+             </property>
+             <property name="orientation">
+              <enum>Qt::Vertical</enum>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <spacer name="horizontalSpacer_66">
+             <property name="orientation">
+              <enum>Qt::Horizontal</enum>
+             </property>
+             <property name="sizeType">
+              <enum>QSizePolicy::Expanding</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>0</width>
+               <height>0</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+          </layout>
+         </item>
+        </layout>
+       </item>
+       <item row="0" column="9">
+        <layout class="QVBoxLayout" name="verticalLayout_40">
+         <item>
+          <widget class="QLabel" name="listenerPosXLabel">
+           <property name="text">
+            <string>listenerPosX</string>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignCenter</set>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <layout class="QHBoxLayout" name="horizontalLayout_39">
+           <item>
+            <spacer name="horizontalSpacer_67">
+             <property name="orientation">
+              <enum>Qt::Horizontal</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>0</width>
+               <height>0</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+           <item>
+            <widget class="QSlider" name="listenerPosX">
+             <property name="enabled">
+              <bool>true</bool>
+             </property>
+             <property name="orientation">
+              <enum>Qt::Vertical</enum>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <spacer name="horizontalSpacer_68">
+             <property name="orientation">
+              <enum>Qt::Horizontal</enum>
+             </property>
+             <property name="sizeType">
+              <enum>QSizePolicy::Expanding</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>0</width>
+               <height>0</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+          </layout>
+         </item>
+        </layout>
+       </item>
+       <item row="0" column="10">
+        <layout class="QVBoxLayout" name="verticalLayout_44">
+         <item>
+          <widget class="QLabel" name="listenerPosYLabel">
+           <property name="text">
+            <string>listenerPosY</string>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignCenter</set>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <layout class="QHBoxLayout" name="horizontalLayout_43">
+           <item>
+            <spacer name="horizontalSpacer_75">
+             <property name="orientation">
+              <enum>Qt::Horizontal</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>0</width>
+               <height>0</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+           <item>
+            <widget class="QSlider" name="listenerPosY">
+             <property name="enabled">
+              <bool>true</bool>
+             </property>
+             <property name="orientation">
+              <enum>Qt::Vertical</enum>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <spacer name="horizontalSpacer_76">
+             <property name="orientation">
+              <enum>Qt::Horizontal</enum>
+             </property>
+             <property name="sizeType">
+              <enum>QSizePolicy::Expanding</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>0</width>
+               <height>0</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+          </layout>
+         </item>
+        </layout>
+       </item>
+       <item row="0" column="11">
+        <layout class="QVBoxLayout" name="verticalLayout_45">
+         <item>
+          <widget class="QLabel" name="listenerPosZLabel">
+           <property name="text">
+            <string>listenerPosZ</string>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignCenter</set>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <layout class="QHBoxLayout" name="horizontalLayout_44">
+           <item>
+            <spacer name="horizontalSpacer_77">
+             <property name="orientation">
+              <enum>Qt::Horizontal</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>0</width>
+               <height>0</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+           <item>
+            <widget class="QSlider" name="listenerPosZ">
+             <property name="enabled">
+              <bool>true</bool>
+             </property>
+             <property name="orientation">
+              <enum>Qt::Vertical</enum>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <spacer name="horizontalSpacer_78">
+             <property name="orientation">
+              <enum>Qt::Horizontal</enum>
+             </property>
+             <property name="sizeType">
+              <enum>QSizePolicy::Expanding</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>0</width>
+               <height>0</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+          </layout>
+         </item>
+        </layout>
+       </item>
+       <item row="0" column="12">
+        <layout class="QVBoxLayout" name="verticalLayout_46">
+         <item>
+          <widget class="QLabel" name="listenerVolecityXLabel">
+           <property name="text">
+            <string>listenerVolecityX</string>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignCenter</set>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <layout class="QHBoxLayout" name="horizontalLayout_45">
+           <item>
+            <spacer name="horizontalSpacer_79">
+             <property name="orientation">
+              <enum>Qt::Horizontal</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>0</width>
+               <height>0</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+           <item>
+            <widget class="QSlider" name="listenerVolecityX">
+             <property name="enabled">
+              <bool>true</bool>
+             </property>
+             <property name="orientation">
+              <enum>Qt::Vertical</enum>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <spacer name="horizontalSpacer_80">
+             <property name="orientation">
+              <enum>Qt::Horizontal</enum>
+             </property>
+             <property name="sizeType">
+              <enum>QSizePolicy::Expanding</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>0</width>
+               <height>0</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+          </layout>
+         </item>
+        </layout>
+       </item>
+       <item row="0" column="13">
+        <layout class="QVBoxLayout" name="verticalLayout_47">
+         <item>
+          <widget class="QLabel" name="listenerVolecityYLabel">
+           <property name="text">
+            <string>listenerVolecityY</string>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignCenter</set>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <layout class="QHBoxLayout" name="horizontalLayout_46">
+           <item>
+            <spacer name="horizontalSpacer_81">
+             <property name="orientation">
+              <enum>Qt::Horizontal</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>0</width>
+               <height>0</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+           <item>
+            <widget class="QSlider" name="listenerVolecityY">
+             <property name="enabled">
+              <bool>true</bool>
+             </property>
+             <property name="orientation">
+              <enum>Qt::Vertical</enum>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <spacer name="horizontalSpacer_82">
+             <property name="orientation">
+              <enum>Qt::Horizontal</enum>
+             </property>
+             <property name="sizeType">
+              <enum>QSizePolicy::Expanding</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>0</width>
+               <height>0</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+          </layout>
+         </item>
+        </layout>
+       </item>
+       <item row="0" column="14">
+        <layout class="QVBoxLayout" name="verticalLayout_48">
+         <item>
+          <widget class="QLabel" name="listenerVolecityZLabel">
+           <property name="text">
+            <string>listenerVolecityZ</string>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignCenter</set>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <layout class="QHBoxLayout" name="horizontalLayout_47">
+           <item>
+            <spacer name="horizontalSpacer_83">
+             <property name="orientation">
+              <enum>Qt::Horizontal</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>0</width>
+               <height>0</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+           <item>
+            <widget class="QSlider" name="listenerVolecityZ">
+             <property name="enabled">
+              <bool>true</bool>
+             </property>
+             <property name="orientation">
+              <enum>Qt::Vertical</enum>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <spacer name="horizontalSpacer_84">
+             <property name="orientation">
+              <enum>Qt::Horizontal</enum>
+             </property>
+             <property name="sizeType">
+              <enum>QSizePolicy::Expanding</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>0</width>
+               <height>0</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+          </layout>
+         </item>
+        </layout>
+       </item>
+      </layout>
      </widget>
     </item>
    </layout>

@@ -429,34 +429,30 @@ void MainWindow::on_maxDistance_valueChanged(int value)
     ui->maxDistanceLabel->setText(QString("maxDistance(%1)").arg(value));
 }
 
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
+#define SET_ONE_VECTOR_OF_SOURCE(getFunc, setFunc, sliderName, valueX, valueY, valueZ)                    \
+    D3DVECTOR vector;                                                                           \
+    if (m_wavPlayer.get3DSource()->getFunc(&vector) != DS_OK)                                   \
+        throw std::exception(#getFunc " error");                                                \
+    if (m_wavPlayer.get3DSource()->setFunc(valueX, valueY, valueZ, DS3D_IMMEDIATE) != DS_OK)    \
+        throw std::exception(#setFunc " error");                                                \
+    ui->sliderName##Label->setText(QString(#sliderName "(%1)").arg(value));
+
+
 void MainWindow::on_posX_valueChanged(int value)
 {
-	D3DVECTOR vector;
-	if (m_wavPlayer.get3DSource()->GetPosition(&vector) != DS_OK)
-		throw std::exception("GetPosition error");
-	if (m_wavPlayer.get3DSource()->SetPosition(value, vector.y, vector.z, DS3D_IMMEDIATE) != DS_OK)
-		throw std::exception("SetMaxDistance error");
-    ui->posXLabel->setText(QString("posX(%1)").arg(value));
+    SET_ONE_VECTOR_OF_SOURCE(GetPosition, SetPosition, posX, value, vector.y, vector.z)
 }
 
 void MainWindow::on_posY_valueChanged(int value)
 {
-	D3DVECTOR vector;
-	if (m_wavPlayer.get3DSource()->GetPosition(&vector) != DS_OK)
-		throw std::exception("GetPosition error");
-	if (m_wavPlayer.get3DSource()->SetPosition(vector.x, value, vector.z, DS3D_IMMEDIATE) != DS_OK)
-		throw std::exception("SetMaxDistance error");
-    ui->posYLabel->setText(QString("posY(%1)").arg(value));
+    SET_ONE_VECTOR_OF_SOURCE(GetPosition, SetPosition, posY, vector.x, value, vector.z)
 }
 
 void MainWindow::on_posZ_valueChanged(int value)
 {
-	D3DVECTOR vector;
-	if (m_wavPlayer.get3DSource()->GetPosition(&vector) != DS_OK)
-		throw std::exception("GetPosition error");
-	if (m_wavPlayer.get3DSource()->SetPosition(vector.x, vector.y, value, DS3D_IMMEDIATE) != DS_OK)
-		throw std::exception("SetMaxDistance error");
-    ui->posZLabel->setText(QString("posZ(%1)").arg(value));
+    SET_ONE_VECTOR_OF_SOURCE(GetPosition, SetPosition, posZ, vector.x, vector.y, value)
 }
 
 void MainWindow::on_coneAnglesInside_valueChanged(int value)
@@ -480,7 +476,7 @@ void MainWindow::on_coneAnglesOutside_valueChanged(int value)
 	if (m_wavPlayer.get3DSource()->GetConeAngles(&insideAngle, &outsideAngle) != DS_OK)
 		throw std::exception("GetConeAngles error");
 	
-    if (static_cast<unsigned>(insideAngle) > value)
+    if (insideAngle > static_cast<unsigned>(value))
 		ui->coneAnglesInside->setValue(value),
 		insideAngle = value;
 	if (m_wavPlayer.get3DSource()->SetConeAngles(insideAngle, value, DS3D_IMMEDIATE) != DS_OK)
@@ -489,44 +485,35 @@ void MainWindow::on_coneAnglesOutside_valueChanged(int value)
     ui->coneAnglesOutsideLabel->setText(QString("coneAngleOutside(%1)").arg(value));
 }
 
+///////////////////////////////////////
+
+#define SET_ONE_VECTOR_WITH_ZERO_CHECK_OF_SOURCE(getFunc, setFunc, sliderName, valueX, valueY, valueZ)  \
+    D3DVECTOR vector;                                                                                   \
+    if (m_wavPlayer.get3DSource()->getFunc(&vector) != DS_OK)                                           \
+        throw std::exception(#getFunc " error");                                                        \
+                                                                                                        \
+    if (!(valueX == 0.0 && valueY == 0.0 && valueZ == 0.0))                                             \
+        if (m_wavPlayer.get3DSource()->setFunc(valueX, valueY, valueZ, DS3D_IMMEDIATE) != DS_OK)        \
+            throw std::exception(#setFunc " error");                                                    \
+                                                                                                        \
+    ui->sliderName##Label->setText(QString(#sliderName "(%1)").arg(value));
+
 void MainWindow::on_coneOrientationX_valueChanged(int value)
 {
-	D3DVECTOR vector;
-	if (m_wavPlayer.get3DSource()->GetConeOrientation(&vector) != DS_OK)
-		throw std::exception("GetConeOrientation error");
-
-	if (!(vector.y == 0.0 && vector.z == 0.0 && value == 0))
-		if (m_wavPlayer.get3DSource()->SetConeOrientation(value, vector.y, vector.z, DS3D_IMMEDIATE) != DS_OK)
-			throw std::exception("GetConeOrientation error");
-
-    ui->coneOrientationXLabel->setText(QString("coneOrientationX(%1)").arg(value));
+    SET_ONE_VECTOR_WITH_ZERO_CHECK_OF_SOURCE(GetConeOrientation, SetConeOrientation, coneOrientationX,
+                                             value, vector.y, vector.z);
 }
 
 void MainWindow::on_coneOrientationY_valueChanged(int value)
 {
-	D3DVECTOR vector;
-	if (m_wavPlayer.get3DSource()->GetConeOrientation(&vector) != DS_OK)
-		throw std::exception("GetConeOrientation error");
-
-	if (!(vector.x == 0.0 && vector.z == 0.0 && value == 0))
-		if (m_wavPlayer.get3DSource()->SetConeOrientation(vector.x, value, vector.z, DS3D_IMMEDIATE) != DS_OK)
-			throw std::exception("GetConeOrientation error");
-
-    ui->coneOrientationYLabel->setText(QString("coneOrientationY(%1)").arg(value));
+    SET_ONE_VECTOR_WITH_ZERO_CHECK_OF_SOURCE(GetConeOrientation, SetConeOrientation, coneOrientationY,
+                                             vector.x, value, vector.z);
 }
 
 void MainWindow::on_coneOrientationZ_valueChanged(int value)
 {
-	D3DVECTOR vector;
-	if (m_wavPlayer.get3DSource()->GetConeOrientation(&vector) != DS_OK)
-		throw std::exception("GetConeOrientation error");
-
-	//	the orientation vector could not be all zeros in three directions!
-	if (!(vector.x == 0.0 && vector.y == 0.0 && value == 0))
-		if (m_wavPlayer.get3DSource()->SetConeOrientation(vector.x, vector.y, value, DS3D_IMMEDIATE) != DS_OK)
-			throw std::exception("GetConeOrientation error");
-
-    ui->coneOrientationZLabel->setText(QString("coneOrientationZ(%1)").arg(value));
+    SET_ONE_VECTOR_WITH_ZERO_CHECK_OF_SOURCE(GetConeOrientation, SetConeOrientation, coneOrientationZ,
+                                             vector.x, vector.y, value);
 }
 
 void MainWindow::on_coneOutsideVolume_valueChanged(int value)
@@ -538,38 +525,24 @@ void MainWindow::on_coneOutsideVolume_valueChanged(int value)
 
 void MainWindow::on_volecityX_valueChanged(int value)
 {
-	D3DVECTOR vector;
-	if (m_wavPlayer.get3DSource()->GetVelocity(&vector) != DS_OK)
-		throw std::exception("GetVelocity error");
-	if (m_wavPlayer.get3DSource()->SetVelocity(value, vector.y, vector.z, DS3D_IMMEDIATE) != DS_OK)
-		throw std::exception("SetVelocity error");
-    ui->volecityXLabel->setText(QString("volecityX(%1)").arg(value));
+    SET_ONE_VECTOR_OF_SOURCE(GetVelocity, SetVelocity, volecityX, value, vector.y, vector.z)
 }
 
 void MainWindow::on_volecityY_valueChanged(int value)
 {
-	D3DVECTOR vector;
-	if (m_wavPlayer.get3DSource()->GetVelocity(&vector) != DS_OK)
-		throw std::exception("GetVelocity error");
-	if (m_wavPlayer.get3DSource()->SetVelocity(vector.x, value, vector.z, DS3D_IMMEDIATE) != DS_OK)
-		throw std::exception("SetVelocity error");
-    ui->volecityYLabel->setText(QString("volecityY(%1)").arg(value));
+    SET_ONE_VECTOR_OF_SOURCE(GetVelocity, SetVelocity, volecityY, vector.x, value, vector.z)
 }
 
 void MainWindow::on_volecityZ_valueChanged(int value)
 {
-	D3DVECTOR vector;
-	if (m_wavPlayer.get3DSource()->GetVelocity(&vector) != DS_OK)
-		throw std::exception("GetVelocity error");
-	if (m_wavPlayer.get3DSource()->SetVelocity(vector.x, vector.y, value, DS3D_IMMEDIATE) != DS_OK)
-		throw std::exception("SetVelocity error");
-    ui->volecityZLabel->setText(QString("volecityZ(%1)").arg(value));
+    SET_ONE_VECTOR_OF_SOURCE(GetVelocity, SetVelocity, volecityX, vector.x, vector.y, value)
 }
 
 void MainWindow::on_distanceFactor_valueChanged(int value)
 {
-    if (m_wavPlayer.get3DListener()->SetDistanceFactor(value, DS3D_IMMEDIATE) != DS_OK)
-        throw std::exception("SetDistanceFactor error");
+    if (value != 0)
+        if (m_wavPlayer.get3DListener()->SetDistanceFactor(value, DS3D_IMMEDIATE) != DS_OK)
+            throw std::exception("SetDistanceFactor error");
     ui->distanceFactorLabel->setText(QString("distanceFactor(%1 m/unit)").arg(value));
 }
 
@@ -587,169 +560,111 @@ void MainWindow::on_dopplerFactor_valueChanged(int value)
     ui->dopplerFactorLabel->setText(QString("dopplerFactor(%1 times)").arg(value));
 }
 
+/////////////////////////////////////////////
+
+#define SET_ONE_ORIENTATION_WITH_ZERO_CHECK_OF_LISTENER(sliderName, frontX, frontY, frontZ, topX, topY, topZ)   \
+    D3DVECTOR front, top;                                                                           \
+    if (m_wavPlayer.get3DListener()->GetOrientation(&front, &top) != DS_OK)                         \
+        throw std::exception("GetOrientation error");                                               \
+                                                                                                    \
+    if (!(frontX == 0.0 && frontY == 0.0 && frontZ == 0 ||                                          \
+          topX == 0.0 && topY == 0.0 && topZ == 0))                                                 \
+        if (m_wavPlayer.get3DListener()->SetOrientation(frontX, frontY, frontZ,                     \
+                                                        topZ, topY, topZ,                           \
+                                                        DS3D_IMMEDIATE)                             \
+                != DS_OK)                                                                           \
+            throw std::exception("SetOrientation error");                                           \
+    ui->sliderName##Label->setText(QString(#sliderName "(%1)").arg(value));
+
+
 void MainWindow::on_orientationFrontX_valueChanged(int value)
 {
-    D3DVECTOR front, top;
-    if (m_wavPlayer.get3DListener()->GetOrientation(&front, &top) != DS_OK)
-        throw std::exception("GetOrientation error");
-
-    if (!(front.y == 0.0 && front.z == 0.0 && value == 0 ||
-          top.x == 0.0 && top.y == 0.0 && top.z == 0))
-        if (m_wavPlayer.get3DListener()->SetOrientation(value, front.y, front.z,
-                                                    top.x, top.y, top.z,
-                                                    DS3D_IMMEDIATE)
-                != DS_OK)
-            throw std::exception("SetOrientation error");
-    ui->orientationFrontXLabel->setText(QString("orientationFrontX(%1)").arg(value));
+    SET_ONE_ORIENTATION_WITH_ZERO_CHECK_OF_LISTENER(orientationFrontX,
+                                                    value, front.y, front.z,
+                                                    top.x, top.y, top.z);
 }
 
 void MainWindow::on_orientationFrontY_valueChanged(int value)
 {
-    D3DVECTOR front, top;
-    if (m_wavPlayer.get3DListener()->GetOrientation(&front, &top) != DS_OK)
-        throw std::exception("GetOrientation error");
-
-    if (!(front.x == 0.0 && front.z == 0.0 && value == 0 ||
-          top.x == 0.0 && top.y == 0.0 && top.z == 0))
-        if (m_wavPlayer.get3DListener()->SetOrientation(front.x, value, front.z,
-                                                    top.x, top.y, top.z,
-                                                    DS3D_IMMEDIATE)
-                != DS_OK)
-            throw std::exception("SetOrientation error");
-    ui->orientationFrontYLabel->setText(QString("orientationFrontY(%1)").arg(value));
+    SET_ONE_ORIENTATION_WITH_ZERO_CHECK_OF_LISTENER(orientationFrontY,
+                                                    front.x, value, front.z,
+                                                    top.x, top.y, top.z);
 }
 
 void MainWindow::on_orientationFrontZ_valueChanged(int value)
 {
-    D3DVECTOR front, top;
-    if (m_wavPlayer.get3DListener()->GetOrientation(&front, &top) != DS_OK)
-        throw std::exception("GetOrientation error");
-
-    if (!(front.x == 0.0 && front.y == 0.0 && value == 0 ||
-          top.x == 0.0 && top.y == 0.0 && top.z == 0))
-        if (m_wavPlayer.get3DListener()->SetOrientation(front.x, front.y, value,
-                                                    top.x, top.y, top.z,
-                                                    DS3D_IMMEDIATE)
-                != DS_OK)
-            throw std::exception("SetOrientation error");
-    ui->orientationFrontZLabel->setText(QString("orientationFrontZ(%1)").arg(value));
+    SET_ONE_ORIENTATION_WITH_ZERO_CHECK_OF_LISTENER(orientationFrontZ,
+                                                    front.x, front.y, value,
+                                                    top.x, top.y, top.z);
 }
 
 void MainWindow::on_orientationTopX_valueChanged(int value)
 {
-    D3DVECTOR front, top;
-    if (m_wavPlayer.get3DListener()->GetOrientation(&front, &top) != DS_OK)
-        throw std::exception("GetOrientation error");
-
-    if (!(front.x == 0.0 && front.y == 0.0 && front.z == 0 ||
-          value == 0.0 && top.y == 0.0 && top.z == 0))
-        if (m_wavPlayer.get3DListener()->SetOrientation(front.x, front.y, front.z,
-                                                    value, top.y, top.z,
-                                                    DS3D_IMMEDIATE)
-                != DS_OK)
-            throw std::exception("SetOrientation error");
-    ui->orientationTopXLabel->setText(QString("orientationTopX(%1)").arg(value));
+    SET_ONE_ORIENTATION_WITH_ZERO_CHECK_OF_LISTENER(orientationTopX,
+                                                    front.x, front.y, front.z,
+                                                    value, top.y, top.z);
 }
 
 void MainWindow::on_orientationTopY_valueChanged(int value)
 {
-    D3DVECTOR front, top;
-    if (m_wavPlayer.get3DListener()->GetOrientation(&front, &top) != DS_OK)
-        throw std::exception("GetOrientation error");
-
-    if (!(front.x == 0.0 && front.y == 0.0 && front.z == 0 ||
-          top.x == 0.0 && value == 0.0 && top.z == 0))
-        if (m_wavPlayer.get3DListener()->SetOrientation(front.x, front.y, front.z,
-                                                    top.x, value, top.z,
-                                                    DS3D_IMMEDIATE)
-                != DS_OK)
-            throw std::exception("SetOrientation error");
-    ui->orientationTopYLabel->setText(QString("orientationTopY(%1)").arg(value));
+    SET_ONE_ORIENTATION_WITH_ZERO_CHECK_OF_LISTENER(orientationTopY,
+                                                    front.x, front.y, front.z,
+                                                    top.x, value, top.z);
 }
 
 void MainWindow::on_orientationTopZ_valueChanged(int value)
 {
-    D3DVECTOR front, top;
-    if (m_wavPlayer.get3DListener()->GetOrientation(&front, &top) != DS_OK)
-        throw std::exception("GetOrientation error");
-
-    if (!(front.x == 0.0 && front.y == 0.0 && front.z == 0 ||
-          top.x == 0.0 && top.y == 0.0 && value == 0))
-        if (m_wavPlayer.get3DListener()->SetOrientation(front.x, front.y, front.z,
-                                                    top.x, top.y, value,
-                                                    DS3D_IMMEDIATE)
-                != DS_OK)
-            throw std::exception("SetOrientation error");
-    ui->orientationTopZLabel->setText(QString("orientationTopZ(%1)").arg(value));
+    SET_ONE_ORIENTATION_WITH_ZERO_CHECK_OF_LISTENER(orientationTopZ,
+                                                    front.x, front.y, front.z,
+                                                    top.x, top.y, value);
 }
+
+/////////////////////////////////////////////////////////
+
+#define SET_ONE_VECTOR_WITH_ZERO_CHECK_OF_LISTENER(getFunc, setFunc, sliderName, valueX, valueY, valueZ)\
+    D3DVECTOR vector;                                                                                   \
+    if (m_wavPlayer.get3DListener()->getFunc(&vector) != DS_OK)                                         \
+        throw std::exception(#getFunc " error");                                                        \
+                                                                                                        \
+    if (!(valueX == 0.0 && valueY == 0.0 && valueZ == 0.0))                                             \
+        if (m_wavPlayer.get3DListener()->setFunc(valueX, valueY, valueZ, DS3D_IMMEDIATE) != DS_OK)      \
+            throw std::exception(#setFunc " error");                                                    \
+                                                                                                        \
+    ui->sliderName##Label->setText(QString(#sliderName "(%1)").arg(value));
+
 
 void MainWindow::on_listenerPosX_valueChanged(int value)
 {
-    D3DVECTOR vector;
-    if (m_wavPlayer.get3DListener()->GetPosition(&vector) != DS_OK)
-        throw std::exception("GetVelocity error");
-
-    if (!(value == 0.0 && vector.y == 0.0 && vector.z == 0))
-        if (m_wavPlayer.get3DListener()->SetPosition(value, vector.y, vector.z, DS3D_IMMEDIATE) != DS_OK)
-            throw std::exception("SetVelocity error");
-    ui->listenerPosXLabel->setText(QString("listenerPosX(%1)").arg(value));
+    SET_ONE_VECTOR_WITH_ZERO_CHECK_OF_LISTENER(GetPosition, SetPosition, listenerPosX,
+                                               value, vector.y, vector.z);
 }
 
 void MainWindow::on_listenerPosY_valueChanged(int value)
 {
-    D3DVECTOR vector;
-    if (m_wavPlayer.get3DListener()->GetPosition(&vector) != DS_OK)
-        throw std::exception("GetVelocity error");
-
-    if (!(vector.x == 0.0 && value == 0.0 && vector.z == 0))
-        if (m_wavPlayer.get3DListener()->SetPosition(vector.x, value, vector.z, DS3D_IMMEDIATE) != DS_OK)
-            throw std::exception("SetVelocity error");
-    m_wavPlayer.get3DListener()->CommitDeferredSettings();
-    ui->listenerPosYLabel->setText(QString("listenerPosY(%1)").arg(value));
+    SET_ONE_VECTOR_WITH_ZERO_CHECK_OF_LISTENER(GetPosition, SetPosition, listenerPosY,
+                                               vector.x, value, vector.z);
 }
 
 void MainWindow::on_listenerPosZ_valueChanged(int value)
 {
-    D3DVECTOR vector;
-    if (m_wavPlayer.get3DListener()->GetPosition(&vector) != DS_OK)
-        throw std::exception("GetVelocity error");
-
-    if (!(vector.x == 0.0 && vector.y == 0.0 && value == 0))
-        if (m_wavPlayer.get3DListener()->SetPosition(vector.x, vector.y, value, DS3D_IMMEDIATE) != DS_OK)
-            throw std::exception("SetVelocity error");
-    ui->listenerPosZLabel->setText(QString("listenerPosZ(%1)").arg(value));
+    SET_ONE_VECTOR_WITH_ZERO_CHECK_OF_LISTENER(GetPosition, SetPosition, listenerPosZ,
+                                               vector.x, vector.y, value);
 }
 
 void MainWindow::on_listenerVolecityX_valueChanged(int value)
 {
-    D3DVECTOR vector;
-    if (m_wavPlayer.get3DListener()->GetVelocity(&vector) != DS_OK)
-        throw std::exception("GetVelocity error");
-
-    if (!(value == 0.0 && vector.y == 0.0 && vector.z == 0))
-        if (m_wavPlayer.get3DListener()->SetVelocity(value, vector.y, vector.z, DS3D_IMMEDIATE) != DS_OK)
-            throw std::exception("SetVelocity error");
-    ui->listenerVolecityXLabel->setText(QString("listenerVolecityX(%1)").arg(value));
+    SET_ONE_VECTOR_WITH_ZERO_CHECK_OF_LISTENER(GetVelocity, SetVelocity, listenerVolecityX,
+                                               value, vector.y, vector.z);
 }
 
 void MainWindow::on_listenerVolecityY_valueChanged(int value)
 {
-    D3DVECTOR vector;
-    if (m_wavPlayer.get3DListener()->GetVelocity(&vector) != DS_OK)
-        throw std::exception("GetVelocity error");
-
-    if (!(vector.x == 0.0 && value == 0.0 && vector.z == 0))
-        if (m_wavPlayer.get3DListener()->SetVelocity(vector.x, value, vector.z, DS3D_IMMEDIATE) != DS_OK)
-            throw std::exception("SetVelocity error");
-    ui->listenerVolecityYLabel->setText(QString("listenerVolecityY(%1)").arg(value));
+    SET_ONE_VECTOR_WITH_ZERO_CHECK_OF_LISTENER(GetVelocity, SetVelocity, listenerVolecityY,
+                                               vector.x, value, vector.z);
 }
 
 void MainWindow::on_listenerVolecityZ_valueChanged(int value)
 {
-    D3DVECTOR vector;
-    if (m_wavPlayer.get3DListener()->GetVelocity(&vector) != DS_OK)
-        throw std::exception("GetVelocity error");
-    if (m_wavPlayer.get3DListener()->SetVelocity(vector.x, vector.y, value, DS3D_IMMEDIATE) != DS_OK)
-        throw std::exception("SetVelocity error");
-    ui->listenerVolecityZLabel->setText(QString("listenerVolecityZ(%1)").arg(value));
+    SET_ONE_VECTOR_WITH_ZERO_CHECK_OF_LISTENER(GetVelocity, SetVelocity, listenerVolecityZ,
+                                               vector.x, vector.y, value);
 }

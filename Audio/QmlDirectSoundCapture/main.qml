@@ -77,7 +77,7 @@ Window {
                         dsCapture.startCapture(checkBoxEnableAec.checked ? CppDsCapture.AcousticEchoCancellationMicrosoft : CppDsCapture.None,
                                                checkBoxEnableNs.checked,
                                                checkBoxNoiseFill.checked ? CppDsCapture.NoiseSuppressionMicrosoft : CppDsCapture.None,
-                                               "lgxZJ.pcm")
+                                               "lgxZJ.wav")
                 }
             }
 

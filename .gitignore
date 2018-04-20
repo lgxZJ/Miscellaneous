@@ -6,6 +6,8 @@
 **/*.sdf
 **/*.suo
 **/*.vcxproj.*
+**/*.ilk
+**/*.pdb
 
 **/debug/
 **/GeneratedFiles/
@@ -14,3 +16,6 @@
 # Qt relates files
 **/build*/
 **/*.pro.user
+
+# Non-source files
+**/*.exe

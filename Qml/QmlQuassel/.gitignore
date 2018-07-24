@@ -1,0 +1,45 @@
+######################################################
+# generated executables
+**/*.exe
+
+######################################################
+
+# Qt build files
+**/build
+
+# qml cache files
+**/*.qmlc
+**/*.qmlc.*
+
+# qml autosave files
+**/*.autosave
+
+# optimized files for Qt recursive qt projects
+.qmake.stash
+
+# js cache files
+**/*.jsc
+
+**/*.pro.user
+
+**/*.db
+
+######################################################
+
+# VS project hidden files
+**/.vs
+
+# VS generated files when importing qt projects
+**/debug
+**/release
+**/GeneratedFiles
+**/*.vcxproj
+**/*.vcxproj.*
+
+# VS incremental linked files
+**/*.ilk
+
+**/*.pdb
+
+# VS x64 build
+**/x64

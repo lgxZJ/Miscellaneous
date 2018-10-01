@@ -1,0 +1,54 @@
+configurations {
+    Toolset { 
+        key : "PlatformToolset"; 
+        choices: { v140 };  
+        // Explicitly Not including pivot variants:  "WindowsKernelModeDriver8.0", "WindowsApplicationForDrivers8.0", "WindowsUserModeDriver8.0" 
+
+        // We're normalizing out the concept of the v140 platform -- Overloading the $(PlatformToolset) variable for additional pivots was a dumb idea.
+        v140.condition = "( $(PlatformToolset.ToLower().IndexOf('v140')) > -1 Or '$(PlatformToolset.ToLower())' == 'windowskernelmodedriver8.0' Or '$(PlatformToolset.ToLower())' == 'windowsapplicationfordrivers8.0' Or '$(PlatformToolset.ToLower())' == 'windowsusermodedriver8.0' )";
+    };
+}
+
+nuget 
+{
+    nuspec
+    {
+        id = EasyXPlus;
+        version : 1.0.1;
+        title: EasyXPlus;
+        authors: lgxZJ@outlook.com;
+        projectUrl: "https://github.com/lgxZJ/EasyXPlus";
+        summary:A simple C++ graphic library for BEGINNERS under windows!;
+
+        description: "A simple C++ graphic library for BEGINNERS under windows!";
+        tags: { beta, native, c++ };
+    }
+
+    files
+    {
+        include : { "headers\*" };
+        docs : { "doc\html\*" };
+
+        [x86, v140, debug] {
+            lib:        builds\vs2015\libeasy\Debug\libeasyd.lib;
+            symbols:    builds\vs2015\libeasy\Debug\libeasy.pdb;
+        }
+        [x86, v140, release] {
+            lib:        builds\vs2015\libeasy\Release\libeasy.lib;
+            symbols:    builds\vs2015\libeasy\Release\libeasy.pdb;
+        }
+        [x64, v140, debug] {
+            lib:        builds\vs2015\libeasy\x64\Debug\libeasyd.lib;
+            symbols:    builds\vs2015\libeasy\x64\Debug\libeasy.pdb;
+        }
+        [x64, v140, release] {
+            lib:        builds\vs2015\libeasy\x64\Release\libeasy.lib;
+            symbols:    builds\vs2015\libeasy\x64\Release\libeasy.pdb;
+        }
+    }
+
+    targets
+    {
+        Defines += HAS_EASYXPLUS;
+    }
+}

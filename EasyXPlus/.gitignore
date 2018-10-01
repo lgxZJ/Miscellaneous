@@ -1,0 +1,29 @@
+# back up files
+~*
+
+# Precompiled header directory
+**/ipch
+
+# logs
+**/*.tlog
+**/*.log
+
+# hide folders
+**/.vs
+**/.vscode
+**/*.opendb
+
+# generated objects
+**/*.obj
+**/*.idb
+**/*.lib
+**/*.pdb
+**/*.db
+**/*.txt
+**/*.vcxproj.user
+**/*.exe
+**/*.iobj
+**/*.ipdb
+
+# nuget generated files
+**/*.nupkg

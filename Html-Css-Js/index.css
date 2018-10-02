@@ -1,0 +1,113 @@
+header {
+    position: fixed;
+    border-color: black;
+    border-width: 1px;
+    border-style: solid;
+
+    height: 7%;
+    width: 75%;
+    font-size: 10px;
+}
+
+/*********************************************
+ *********************************************/
+
+nav {
+    position: fixed;
+    top: 7%;
+    width: 75%;
+    height: 10%;
+    margin-top: 9px;
+    padding: 0px;
+
+    border-color: black;
+    border-width: 1px;
+    border-style: solid;
+}
+
+#nav-language {
+    border-color: black;
+    border-width: 1px;
+    border-style: solid;
+    margin: 10px;
+}
+
+#nav-framework {
+    border-color: black;
+    border-width: 1px;
+    border-style: solid;
+    margin: 10px;
+}
+
+#nav-talk {
+    border-color: black;
+    border-width: 1px;
+    border-style: solid;
+    margin: 10px;
+}
+
+#nav-life {
+    border-color: black;
+    border-width: 1px;
+    border-style: solid;
+    margin: 10px;
+}
+
+/*********************************************
+ *********************************************/
+
+#one-blog {
+    border-width: 1px;
+    border-color: black;
+    border-style: solid;
+    width: 75%;
+}
+
+/*********************************************
+ *********************************************/
+
+#beneath-nav {
+    position: relative;
+    width: 75%;
+    height: 17%;
+    padding: 2px;
+
+    border-color: red;
+    border-width: 1px;
+    border-style: solid;
+}
+
+/*********************************************
+ *********************************************/
+
+#float-personal-block {
+    position: fixed;
+    left: 75%;
+
+    border-width: 1px;
+    border-color: black;
+    border-style: solid;
+
+    width: 15%;
+    height: 100%;
+    /*float: right;*/
+}
+
+#float-personal-block-portrait {
+    border: 1px solid black;
+    width: 100%;
+    height: 16%;
+}
+
+#img-portrait {
+    height: 100%;
+    width: height;
+}
+
+/********************************************/
+
+footer {
+    border-color: black;
+    border-width: 1px;
+    border-style: solid;
+}

@@ -1,0 +1,224 @@
+/*********************************************
+ *********************************************/
+
+header {
+    background: #32373c;
+
+    width: 100%;
+    height: 200pt;
+
+    margin: 0;
+    padding: 0;
+
+    font-size: 20pt;
+    color: #eee;
+
+    background-image: url("./title-yellow.png")
+}
+
+.personal-blog {
+    height: 40pt;
+}
+/**********************************************
+**********************************************/
+
+nav, ul {
+    margin: 0;
+    padding: 0;
+    font-size: 0;
+
+    width: 100%;
+    height: 38pt;
+    /*background: #32373c;*/
+    background: rebeccapurple;
+}
+
+/* the height must be a absolute value to make this type of elements centered */
+nav ul li, nav ul li button {
+    display: inline-block;
+
+    height: 38pt;
+    line-height: 38pt;
+
+    border: 0px solid black;
+
+    margin: 0 4px;
+    padding: 0 6px;
+
+    color: white;
+    background: #32373c;
+
+    font-size: 20px;
+    font-family: "Open Sans", Helvetica, Arial, "Liberation Sans", sans-serif;
+    cursor: pointer;
+}
+
+nav li:hover {
+    display: inline-block;
+
+    height: 38pt;
+    line-height: 38pt;
+
+    border: 0px solid black;
+
+    margin: 0 4px;
+    padding: 0 6px;
+
+    color: #4ca6cf;
+    background: #32373c;
+
+    font-size: 20px;
+    font-family: "Open Sans", Helvetica, Arial, "Liberation Sans", sans-serif;
+    cursor: pointer;
+}
+
+.extend-button {
+    list-style-type: none;
+    font-size: 0pt;
+}
+
+.search-input {
+    position: absolute;
+    top: calc(200pt - 32pt);
+    right: calc(32pt + 160pt);
+
+    height: 32pt;   /* the same as li elements*/
+    width: 140pt;
+    font-size: 14px;
+    
+    vertical-align: middle;
+
+    /* background: #32373c;
+    background-image: url("search-icon.png");
+    background-size: 100%;
+    background-repeat:no-repeat; */
+}
+
+.search-button {
+    position: absolute;
+    top: calc(200pt - 32pt);
+    right: 160pt;   /* the same as #float-personal-block */
+
+    height: 32pt;   /* the same as li elements*/
+    width: 32pt;
+    border: none;
+    vertical-align: middle;
+
+    background: #32373c;
+    background-position: center;
+    background-image: url("search-icon.png");
+    background-size: 14pt;
+    background-repeat:no-repeat;
+} 
+
+
+
+/*********************************************
+ *********************************************/
+
+#beneath-nav {
+    height: 8%;
+
+    margin: 0px;
+}
+
+/*********************************************
+ *********************************************/
+
+body {
+    margin: 0px;
+    padding: 0px;
+
+    overflow: /*hidden*/auto;
+}
+
+#one-blog {
+    border-width: 1px;
+    border-color: black;
+    border-style: solid;
+    width: 75%;
+
+    left: 0px;
+}
+
+/*********************************************
+ *********************************************/
+
+#float-personal-block {
+    position: fixed;
+    top: 0pt;
+    right: 0%;
+    padding: 0px;
+    margin: 0px;
+
+    border-width: 1px;
+    border-color: black;
+    border-style: solid;
+
+    width: 160pt;
+    height: 100%;
+}
+
+#float-personal-block-portrait {
+    position: fixed;
+
+    right: calc(80pt - 60pt / 2);
+    top: 0pt;
+
+    height: 60pt;
+    width: 60pt;
+    border-radius: 30pt;
+
+    margin: 0;
+    
+    background-image: url(./head-portrait.jpg);
+    background-position: center;
+    background-size: 60pt;
+    background-repeat: no-repeat;
+}
+
+#float-personal-block-portrait-beneth {
+    width: 60pt;
+    height: 60pt;
+
+    background: transparent;
+}
+
+section {
+    height: 40pt;
+    line-height: 40pt;
+
+    text-align: center;
+
+    font-size: 20pt;
+    background-color: #4ca6cf;
+}
+
+#float-personal-block {
+    background-color: brown;
+}
+
+#float-personal-block > p {
+    margin: 0;
+}
+
+#float-personal-block > p > a {
+    height: 20pt;
+    margin: 0pt;
+    line-height: 20pt;
+
+    display: block;
+    text-align: center;
+    font-size: 12pt;
+    background-color: cadetblue;
+}
+
+/********************************************/
+
+footer {
+    border-color: black;
+    border-width: 1px;
+    border-style: solid;
+
+    width: 75%;
+}

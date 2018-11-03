@@ -3,3 +3,5 @@
 2.  extend按钮控制导航栏收放。
 3.  更改搜索图标。
 4.  localStorage sessionStorage
+5.  worker.
+6.  change right slide to relative size;

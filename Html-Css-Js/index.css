@@ -30,7 +30,7 @@ nav, ul {
     width: 100%;
     height: 38pt;
     /*background: #32373c;*/
-    background: rebeccapurple;
+    background: rgb(50, 55, 60);
 }
 
 /* the height must be a absolute value to make this type of elements centered */
@@ -77,13 +77,54 @@ nav li:hover {
     font-size: 0pt;
 }
 
+#search-container {
+    position: absolute;
+    top: calc(200pt);
+    right: calc(160pt);
+
+    width: calc(178pt + 48pt);
+    height: 38pt;
+
+    background-color: brown;
+}
+
+#search-dropdown-wrapper {
+    text-align: center;
+}
+
+#search-dropdown {
+    position: absolute;
+    top: calc(200pt + 1pt);
+    right: calc(32pt + 160pt + 2pt + 2pt + 1pt + 140pt);
+
+    width: 48pt;
+    height: 36pt;
+    line-height: 36pt;
+
+    display: inline-block;
+
+    background-color: rgb(227, 233, 237);
+}
+
+#search-dropdown::after {
+    background-image: url('./arrow-down.svg');
+    background-size: 10px 10px;
+    display: inline-block;
+    width: 10px; 
+    height: 10px;
+
+    content:"";
+}
+
 .search-input {
     position: absolute;
-    top: calc(200pt - 32pt);
-    right: calc(32pt + 160pt);
+    top: calc(200pt + 1pt);
+    right: calc(32pt + 160pt + 2pt + 2pt + 1pt);
 
-    height: 32pt;   /* the same as li elements*/
+    height: 36pt;   /* the same as li elements*/
     width: 140pt;
+    padding: 4pt;
+    border: none;
     font-size: 14px;
     
     vertical-align: middle;
@@ -96,20 +137,23 @@ nav li:hover {
 
 .search-button {
     position: absolute;
-    top: calc(200pt - 32pt);
-    right: 160pt;   /* the same as #float-personal-block */
+    top: calc(200pt + 1pt);
+    right: calc(160pt + 1pt);   /* the same as #float-personal-block */
 
-    height: 32pt;   /* the same as li elements*/
-    width: 32pt;
+    height: 36pt;   /* the same as li elements*/
+    width: 36pt;
     border: none;
     vertical-align: middle;
 
-    background: #32373c;
+    background: white;
     background-position: center;
-    background-image: url("search-icon.png");
+    background-image: url("search.svg");
     background-size: 14pt;
     background-repeat:no-repeat;
+
+    cursor: pointer;
 } 
+
 
 
 

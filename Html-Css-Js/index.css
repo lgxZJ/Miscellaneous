@@ -28,13 +28,12 @@ nav, ul {
     font-size: 0;
 
     width: 100%;
-    height: 38pt;
-    /*background: #32373c;*/
+    height: 39pt;
     background: rgb(50, 55, 60);
 }
 
 /* the height must be a absolute value to make this type of elements centered */
-nav ul li, nav ul li button {
+nav ul li {
     display: inline-block;
 
     height: 38pt;
@@ -42,8 +41,8 @@ nav ul li, nav ul li button {
 
     border: 0px solid black;
 
-    margin: 0 4px;
-    padding: 0 6px;
+    margin: 0 4pt;
+    padding: 0 6pt;
 
     color: white;
     background: #32373c;
@@ -51,41 +50,74 @@ nav ul li, nav ul li button {
     font-size: 20px;
     font-family: "Open Sans", Helvetica, Arial, "Liberation Sans", sans-serif;
     cursor: pointer;
+
+    text-shadow: 3pt 3pt 2pt black;
+    user-select: none;
 }
 
 nav li:hover {
     display: inline-block;
 
-    height: 38pt;
+    height: 38pt;   /* one pt less then normal elements */
     line-height: 38pt;
 
     border: 0px solid black;
 
-    margin: 0 4px;
-    padding: 0 6px;
+    margin: 0 4pt;
+    padding: 0 6pt;
 
-    color: #4ca6cf;
-    background: #32373c;
+    color: black;
+    background: white;
 
     font-size: 20px;
     font-family: "Open Sans", Helvetica, Arial, "Liberation Sans", sans-serif;
     cursor: pointer;
+
+    user-select: none;
 }
 
-.extend-button {
-    list-style-type: none;
-    font-size: 0pt;
+#weight-wrapper {
+    width: 160pt;
+    height: 24pt;
+
+    /* to remove the space between inline elements */
+    font-size: 0;
+
+    text-align: center;
+}
+#weight-input {
+    width: 136pt;
+    height: 24pt;
+
+    font-size: 12pt;
+
+    padding: 0 0;
+    padding-left: 4pt;
+    border: none;
+}
+#weight-button {
+    width: 24pt;
+    height: 24pt;
+    padding: 0 0;
+    border: none;
+    
+    vertical-align: bottom;
+
+    background-image: url("./add-weight.svg");
+    background-repeat: no-repeat;
+    background-size: 24pt;
+    background-position: center;
+
+    cursor: pointer;
 }
 
 #search-container {
     position: absolute;
     top: calc(200pt);
-    right: calc(160pt);
+    right: calc(160pt + 1pt);
 
     width: calc(178pt + 48pt);
     height: 38pt;
-
-    background-color: brown;
 }
 
 #search-dropdown-wrapper {
@@ -95,13 +127,20 @@ nav li:hover {
 #search-dropdown {
     position: absolute;
     top: calc(200pt + 1pt);
-    right: calc(32pt + 160pt + 2pt + 2pt + 1pt + 140pt);
+    right: calc(32pt + 160pt + 2pt + 2pt + 1pt + 140pt + 1pt);
 
-    width: 48pt;
+    width: 58pt;
     height: 36pt;
     line-height: 36pt;
+    font-size: 16pt;
+    color: rgb(11, 34, 57);
+
+    border-top-left-radius: 4pt;
+    border-bottom-left-radius: 4pt;
 
     display: inline-block;
+    cursor: pointer;
+    user-select: none;
 
     background-color: rgb(227, 233, 237);
 }
@@ -119,13 +158,13 @@ nav li:hover {
 .search-input {
     position: absolute;
     top: calc(200pt + 1pt);
-    right: calc(32pt + 160pt + 2pt + 2pt + 1pt);
+    right: calc(32pt + 160pt + 2pt + 2pt + 1pt + 1pt);
 
     height: 36pt;   /* the same as li elements*/
     width: 140pt;
     padding: 4pt;
     border: none;
-    font-size: 14px;
+    font-size: 16pt;
     
     vertical-align: middle;
 
@@ -135,26 +174,35 @@ nav li:hover {
     background-repeat:no-repeat; */
 }
 
+.search-input:focus {
+    outline: none;
+}
+
 .search-button {
     position: absolute;
     top: calc(200pt + 1pt);
-    right: calc(160pt + 1pt);   /* the same as #float-personal-block */
+    right: calc(160pt + 1pt + 1pt);   /* the same as #float-personal-block */
 
     height: 36pt;   /* the same as li elements*/
     width: 36pt;
     border: none;
     vertical-align: middle;
 
+    border-top-right-radius: 4pt;
+    border-bottom-right-radius: 4pt;
+
     background: white;
     background-position: center;
     background-image: url("search.svg");
     background-size: 14pt;
-    background-repeat:no-repeat;
+    background-repeat: no-repeat;
 
     cursor: pointer;
 } 
 
-
+.search-button:focus {
+    outline: none;
+}
 
 
 /*********************************************

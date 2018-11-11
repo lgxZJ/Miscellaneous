@@ -3,6 +3,7 @@
         <title>lgxZJ Blog</title>
         <link rel="stylesheet" type="text/css" href="index.css">
     </head>
+    <script src="./index.js"></script>
 
     <body>
         <header>
@@ -10,11 +11,10 @@
         </header>
         <nav>
             <ul>
-                <li id="extend-button"> <button>》</button> </li>
-                <li id="nav-button"> Languages </li>
-                <li id="nav-button"> Frameworks </li>
-                <li id="nav-button"> Talks </li>
-                <li id="nav-button"> Journals </li>
+                <li class="nav-button"> Languages </li>
+                <li class="nav-button"> Frameworks </li>
+                <li class="nav-button"> Talks </li>
+                <li class="nav-button"> Journals </li>
             </ul>
         </nav>
 
@@ -42,6 +42,12 @@
             <p><a href="http://www.baidu.com"> Project One </a></p>
             <p><a> Project One </a></p>
             <p><a> Project One </a></p>
+
+            <section>Weight</section>
+            <div id="weight-wrapper">
+                <input id="weight-input" placeholder="enter today's weight" oninput="onWeightInput()" onfocus="onWeightFocus()" onblur="onWeightBlur()">
+                <button id="weight-button" type="submit"></button>
+            </div>
         </div>
 
         <!-- an empty block to hold the nav space -->

@@ -22,13 +22,9 @@ document.addEventListener('DOMContentLoaded', function(event) {
     */
 
     var svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-    svg.style.width = '160pt';
-    svg.style.height = '200pt';
 
     var svgNs = svg.namespaceURI;
     var gEle = document.createElementNS(svgNs, 'g');
-    gEle.style.width = '160pt';
-    gEle.style.height = '200pt';
 
     const gWidth = 160;
     const gHeight = 145;
@@ -38,7 +34,6 @@ document.addEventListener('DOMContentLoaded', function(event) {
 
     const cellWidth = (gWidth - cellSpace * (cellCountX - 1)) / cellCountX;
     const cellHeight = cellWidth;
-    //const cellHeight = (gHeight - cellSpace * (cellCountY - 1)) / cellCountY;
 
     const unitSize = 12;
     const unitSuffix = 'pt';
@@ -59,17 +54,73 @@ document.addEventListener('DOMContentLoaded', function(event) {
     }
     svg.appendChild(gEle);
 
-    var legendLine = document.createElementNS(svgNs, 'text');
-    // legendLine.setAttribute('x', (cellCountX - 1) * (cellWidth + cellSpace) + cellWidth + unitSuffix);
-    // legendLine.setAttribute('y', (cellCountY) * (cellHeight + cellSpace) + unitSuffix);
-    var as = (cellCountY) * (cellHeight + cellSpace) + unitSuffix;
-    legendLine.setAttribute('width', '60pt');
-    legendLine.setAttribute('height', '20pt');
-    // legendLine.setAttribute('text-anchor', 'start');
-    legendLine.setAttribute('color', 'black');
-    legendLine.innerHTML = "Less More";
+    function createAndAppendTextTo(parentElement, svgNamespace, x, y, width, height,  textAnchor, textColor, textStr) {
+        var text = document.createElementNS(svgNamespace, 'text');
+        text.setAttribute('x', x);
+        text.setAttribute('y', y);
 
-    svg.appendChild(legendLine);
+        text.setAttribute('width', width);
+        text.setAttribute('height', height);
+        text.setAttribute('text-anchor', textAnchor);
+        text.setAttribute('color', textColor);
+        text.innerHTML = textStr;
+        parentElement.appendChild(text);
+    }
+
+    function createAndAppendRectTo(parentElement, svgNamespace, x, y, width, height, fillColor) {
+        var rect = document.createElementNS(svgNamespace, 'rect');
+
+        rect.setAttribute('x', x);
+        rect.setAttribute('y', y);
+    
+        rect.setAttribute('width', width);
+        rect.setAttribute('height', height);
+        rect.setAttribute('fill', fillColor);
+        parentElement.appendChild(rect);
+    }
+
+    gEle = document.createElementNS(svgNs, 'g');
+    createAndAppendTextTo(gEle, svgNs, 
+        (cellCountX - 3) * (cellWidth + cellSpace) + cellWidth + unitSuffix,
+        (cellCountY) * (cellHeight + cellSpace) + cellHeight - cellSpace + unitSuffix,
+        '60pt',
+        '20pt',
+        'end',
+        'black',
+        'Less');
+
+    createAndAppendRectTo(gEle, 
+        svgNs,
+        (cellCountX - 2) * (cellWidth + cellSpace) + cellWidth + unitSuffix,
+        (cellCountY) * (cellHeight + cellSpace) + unitSuffix,
+        unitSizeWithSuffix,
+        unitSizeWithSuffix,
+        'rgb(25, 97, 39)');
+    createAndAppendRectTo(gEle,
+        svgNs,
+        (cellCountX - 3) * (cellWidth + cellSpace) + cellWidth + unitSuffix,
+        (cellCountY) * (cellHeight + cellSpace) + unitSuffix,
+        unitSizeWithSuffix,
+        unitSizeWithSuffix,
+        'rgb(123, 201, 111)');
+    createAndAppendRectTo(gEle,
+        svgNs,
+        (cellCountX - 4) * (cellWidth + cellSpace) + cellWidth + unitSuffix,
+        (cellCountY) * (cellHeight + cellSpace) + unitSuffix,
+        unitSizeWithSuffix,
+        unitSizeWithSuffix,
+        'rgb(198, 228, 139)');
+
+    createAndAppendTextTo(gEle, svgNs, 
+        (cellCountX - 1) * (cellWidth + cellSpace) + cellWidth + unitSuffix,
+        (cellCountY) * (cellHeight + cellSpace) + cellHeight - cellSpace + unitSuffix,
+        '60pt',
+        '20pt',
+        'end',
+        'black',
+        'More');
+    
+    svg.appendChild(gEle);
 
     var floatPersonalBlock = document.getElementById('float-personal-block');
     if (floatPersonalBlock == null) {

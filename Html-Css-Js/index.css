@@ -12,11 +12,24 @@ header {
 
     font-size: 20pt;
     color: #eee;
+
+    display: table-cell;
+    vertical-align: middle;
 }
 
-.personal-blog {
+#header-text {
     height: 40pt;
+    color: rgb(143, 143, 143);
 }
+
+#header-motto {
+    height: 40pt;
+    color: rgb(129, 220, 218);
+
+    border-left: 1px solid rgb(237, 237, 237);
+}
+
+
 /**********************************************
 **********************************************/
 
@@ -62,21 +75,7 @@ nav ul li {
 nav li:hover {
     display: inline-block;
 
-    height: 38pt;   /* one pt less then normal elements */
-    line-height: 38pt;
-
-    border: 0px solid black;
-
-    margin: 0 4pt;
-    padding: 0 6pt;
-
-    color: black;
     background: rgb(246, 246, 246);
-
-    font-size: 16px;
-    font-family: "Open Sans", Helvetica, Arial, "Liberation Sans", sans-serif;
-    cursor: pointer;
-
     user-select: none;
 }
 
@@ -114,7 +113,7 @@ nav li:hover {
 
     cursor: pointer;
 }
-
+/* 
 #search-container {
     position: absolute;
     top: calc(200pt);
@@ -122,7 +121,7 @@ nav li:hover {
 
     width: calc(178pt + 48pt);
     height: 38pt;
-}
+} */
 
 /* #search-dropdown-wrapper {
     text-align: center;
@@ -179,6 +178,10 @@ nav li:hover {
     background-repeat:no-repeat; */
 }
 
+#search-input::placeholder {
+    color: rgb(203, 203, 203);
+}
+
 #search-input:focus {
     outline: none;
 }
@@ -192,9 +195,6 @@ nav li:hover {
     width: 36pt;
     border: none;
     vertical-align: middle;
-
-    /* border-top-right-radius: 4pt;
-    border-bottom-right-radius: 4pt; */
 
     background: rgb(246, 246, 246);
     background-position: center;
@@ -291,7 +291,9 @@ section {
     text-align: center;
 
     font-size: 20pt;
-    background: linear-gradient(to right, white, #4ca6cf, #4ca6cf, white);
+    /* background: linear-gradient(to right, white, rgb(236, 236, 236) 10%, rgb(236, 236, 236) 90%, white); */
+
+    background: linear-gradient(to right, white, rgb(189, 219, 255), rgb(189, 219, 255), white);
 }
 
 #float-personal-block {
@@ -311,7 +313,7 @@ section {
     display: block;
     text-align: center;
     font-size: 12pt;
-    color: rgb(3, 102, 214);
+    color: rgb(28, 142, 254);
     font-weight: bold;
     background-color: white;
     text-decoration: none;
@@ -329,4 +331,12 @@ footer {
     border-style: solid;
 
     width: 75%;
+}
+
+/*********************************************/
+iframe {
+    width: 1000;
+    height: 4400;
+
+    border: none;
 }

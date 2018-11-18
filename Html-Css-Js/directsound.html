@@ -1,0 +1,80 @@
+<p>DirectSound对于<strong>单声道</strong>的Wav文件（或者说对于单声道的PCM音频数据）提供了内置3D音效的模拟，你能够控制每一个声源和收听者的立体位置，对移动的物体应用多普勒效果等等。在单个应用程序中，可以有多个声源，但是只能有一个收听者。</p>
+<h2 id="d音效概念简介">1. 3D音效概念简介</h2>
+<ol type="1">
+<li>3D坐标： 坐标采用<strong>左手笛卡尔坐标系</strong>，x轴向右延伸，y轴向上延伸，z轴向前延伸。</li>
+<li>3D处理模式： DirectSound由三种3D环境处理模式：<strong>普通模式</strong>、<strong>禁用模式</strong>、<strong>头部相关模式</strong>。普通模式就是<em>完整</em>的3D模式，禁用模式不言而喻，头部相关模式是<em>部分3D模式</em>（因为该模式下所有的声源<strong>参数都是参考听者位置</strong>的，而不是参考原点）。</li>
+<li>延迟生效： 因此每次应用3D配置，DirectSound都要进行大量的计算，可能会家中cpu的负担。因此，声源和听者都支持一种叫做<strong>延迟设置</strong>的方式，多个以<em>延迟设置</em>设置的参数需要调用提交函数才能应用到音频数据上，这样可以避免多次重复计算。</li>
+</ol>
+<figure>
+<img src="https://i.loli.net/2018/03/10/5aa3b3ab54fa3.gif" alt="coordinate-pic" /><figcaption>coordinate-pic</figcaption>
+</figure>
+<h3 id="声源source相关概念">1.1 声源（Source）相关概念</h3>
+<ul>
+<li>最小距离： 在最小距离范围内，听到的声源音量大小保持不变；在最小距离范围外，听到的音量开始成比例衰减（例如最小距离是10米，则听者站在距离声源20米处听到的声音是原始声音的1/2）。</li>
+<li>最大距离： 在最大距离外的听者，不管再怎么朝外移动，听到的音量都不会再减小。</li>
+<li>朝向： 朝向用来指定声源投射的方向，具体见下一点。</li>
+<li>音量投射角度： 3D环境下的音量有一个锥形的投射角度（<strong>当设置朝向时</strong>），分内角和外角：内角的声音是正常的音量，外角的音量通常是衰减的音量，在内角边界向外角边界过渡时音量逐级衰减。</li>
+</ul>
+<figure>
+<img src="https://i.loli.net/2018/03/10/5aa3c8229b76a.gif" alt="cone-pic" /><figcaption>cone-pic</figcaption>
+</figure>
+<ul>
+<li>移动速度： 移动速度在整个3D环境里主要是用来计算多普勒效应（Doppler Effect）的。</li>
+</ul>
+<h3 id="听者listener相关概念">1.2 听者（Listener）相关概念</h3>
+<ul>
+<li>朝向： 听者的朝向角度由两个3维向量构成，实际上这个朝向是一个平面。两个三维向量都以听者头部中心为原点，一个向顶部延伸，一个向前延伸。</li>
+</ul>
+<figure>
+<img src="https://i.loli.net/2018/03/10/5aa3c3d01e614.gif" alt="orientation-pic" /><figcaption>orientation-pic</figcaption>
+</figure>
+<ul>
+<li>距离因子： 距离因子（Distance Factor）表示三维空间中的单位，与<strong>米</strong>成正比（例如距离因子为2，则一个三维点(1,0,0)表示现实中距离原点x轴2米）。</li>
+<li>多普勒因子： 表示产生的多普勒效应是真实效应的几倍。</li>
+<li>滚降因子： 表示音量随距离的衰减程度。0表示不衰减，1表示衰减成程度与现实环境相同，等等。</li>
+</ul>
+<h2 id="d示例程序">2. 3D示例程序</h2>
+<h3 id="获取和设置声源最大最小距离">2.1 获取和设置声源最大最小距离</h3>
+<blockquote>
+<p>IDirectSound3DBuffer8::GetMaxDistance(D3DVALUE * pflMaxDistance);<br /> IDirectSound3DBuffer8::GetMinDistance(D3DVALUE * pflMinDistance);<br /> IDirectSound3DBuffer8::SetMaxDistance(D3DVALUE flMaxDistance, DWORD dwApply);<br /> IDirectSound3DBuffer8::SetMinDistance(D3DVALUE flMinDistance, DWORD dwApply);</p>
+</blockquote>
+<p><strong>dwApply</strong>参数用来指定是立即生效还是延迟生效（需要调用<strong>CommitDeferredSettings</strong>函数）。</p>
+<h3 id="获取和设置声源音量投射角度">2.2 获取和设置声源音量投射角度</h3>
+<p>因为投射角度中外角肯定要比内角大，为了保证这一点我们需要做些额外的判断处理：</p>
+<pre><code>void MainWindow::on_coneAnglesInside_valueChanged(int value)
+{
+    DWORD insideAngle, outsideAngle;
+    if (m_wavPlayer.get3DSource()-&gt;GetConeAngles(&amp;insideAngle, &amp;outsideAngle) != DS_OK)
+        throw std::exception(&quot;GetConeAngles error&quot;);
+
+    if (static_cast&lt;unsigned&gt;(value) &gt; outsideAngle)
+        ui-&gt;coneAnglesOutside-&gt;setValue(value),
+        outsideAngle = value;
+    if (m_wavPlayer.get3DSource()-&gt;SetConeAngles(value, outsideAngle, DS3D_IMMEDIATE) != DS_OK)
+        throw std::exception(&quot;SetConeAngles error&quot;);
+
+    ui-&gt;coneAnglesInsideLabel-&gt;setText(QString(&quot;coneAnglesInside(%1)&quot;).arg(value));
+}</code></pre>
+<h3 id="获取和设置声源朝向">2.3 获取和设置声源朝向</h3>
+<p>这里也有一个特殊情况要处理：朝向的3个维度不能都为0，否则就是一个无效的方向：</p>
+<pre><code>#define SET_ONE_VECTOR_WITH_ZERO_CHECK_OF_SOURCE(getFunc, setFunc, sliderName, valueX, valueY, valueZ)  \
+    D3DVECTOR vector;                                                                                   \
+    if (m_wavPlayer.get3DSource()-&gt;getFunc(&amp;vector) != DS_OK)                                           \
+        throw std::exception(#getFunc &quot; error&quot;);                                                        \
+                                                                                                        \
+    if (!(valueX == 0.0 &amp;&amp; valueY == 0.0 &amp;&amp; valueZ == 0.0))                                             \
+        if (m_wavPlayer.get3DSource()-&gt;setFunc(valueX, valueY, valueZ, DS3D_IMMEDIATE) != DS_OK)        \
+            throw std::exception(#setFunc &quot; error&quot;);                                                    \
+                                                                                                        \
+    ui-&gt;sliderName##Label-&gt;setText(QString(#sliderName &quot;(%1)&quot;).arg(value));
+
+void MainWindow::on_coneOrientationX_valueChanged(int value)
+{
+    SET_ONE_VECTOR_WITH_ZERO_CHECK_OF_SOURCE(GetConeOrientation, SetConeOrientation, coneOrientationX,
+                                            value, vector.y, vector.z);
+}</code></pre>
+<p>其他相关设置这里就不给出代码了，都比较简单，有需要的可以看<a href="https://msdn.microsoft.com/en-us/library/windows/desktop/ee416965(v=vs.85).aspx">官方文档</a>。</p>
+<h2 id="运行结果示意图">3. 运行结果示意图</h2>
+<p>界面太大，我就分成3张图展示了：</p>
+<p><img src="https://i.loli.net/2018/03/10/5aa3cdbe2b24b.png" alt="reuslt-pic1" /> <img src="https://i.loli.net/2018/03/10/5aa3cdcd04062.png" alt="reuslt-pic2" /> <img src="https://i.loli.net/2018/03/10/5aa3cdd8a1168.png" alt="reuslt-pic3" /></p>
+<p>完整代码见<a href="https://github.com/lgxZJ/Miscellaneous/tree/master/Audio/DirectSoundPlay">链接</a>。</p>

@@ -100,6 +100,25 @@ document.addEventListener('DOMContentLoaded', function(event) {
     portrait.style.borderRadius = realHeight + 'px';
     portrait.style.backgroundSize = realHeight + 'px';
 
+    ///////////
+    var headerText = document.getElementById('header-text');
+    if (headerText === null) {
+        console.log('the count of `header-text` elements found is not 1');
+        return
+    }
+    headerText.style.fontSize = portraitHeight / 2;
+    //  one half of header motto's right padding
+    headerText.style.paddingRight = portraitHeight / 2 / 3 / 2; 
+
+    var headerMotto = document.getElementById('header-motto');
+    if (headerMotto === null) {
+        console.log('the count of `header-motto` elements found is not 1');
+        return
+    }
+
+    headerMotto.style.fontSize = portraitHeight / 2 / 3;
+    headerMotto.style.paddingLeft = portraitHeight / 2 / 3;
+
     ////////////
     var headers = document.getElementsByTagName('header');
     if (headers === null || headers.length !== 1) {
@@ -133,16 +152,19 @@ document.addEventListener('DOMContentLoaded', function(event) {
     for (var i = 0; i < navButtons.length; ++i) {
         navButtons[i].style.height = sectionHeight;
         navButtons[i].style.lineHeight = sectionHeight + 'px';
+        navButtons[i].style.fontSize = sectionHeight / 3 + 'px';
     }
 
     ////
+    var top = portraitHeight + sectionHeight / 6 + 'px';
+
     var searchButton = document.getElementById('search-button');
     if (searchButton === null) {
         console.log('the count of search-button elements not found');
         return
     }
 
-    searchButton.style.top = portraitHeight;
+    searchButton.style.top = top;
     searchButton.style.right = portraitWidth;
     searchButton.style.width = sectionHeight / 3 * 2 + 'px';
     searchButton.style.height = sectionHeight / 3 * 2 + 'px';
@@ -156,33 +178,21 @@ document.addEventListener('DOMContentLoaded', function(event) {
         return
     }
 
-    searchInput.style.top = portraitHeight;
+    searchInput.style.top = top;
     searchInput.style.right = portraitWidth + parseFloat(searchButton.style.width);
     searchInput.style.width = sectionWidth;
     searchInput.style.height = sectionHeight/ 3 * 2;
+    searchInput.style.fontSize = parseFloat(searchInput.style.height) / 2;
 
     ////
 
-    // var searchDropdown = document.getElementById('search-dropdown');
-    // if (searchDropdown === null) {
-    //     console.log('the count of search-dropdown elements not found');
+    // var searchContainer = document.getElementById('search-container');
+    // if (searchContainer === null) {
+    //     console.log('the count of search-container elements not found');
     //     return
     // }
 
-    // searchDropdown.style.top = portraitHeight;
-    // searchDropdown.style.right = portraitWidth + parseFloat(searchButton.style.width) + parseFloat(searchInput.style.width);
-    // searchDropdown.style.width = 6 * parseFloat(searchDropdown.style.fontSize);
-    // searchDropdown.style.height = sectionHeight / 3 * 2;
-
-    ////
-
-    var searchContainer = document.getElementById('search-container');
-    if (searchContainer === null) {
-        console.log('the count of search-container elements not found');
-        return
-    }
-
-    searchContainer.style.top = portraitHeight;
+    // searchContainer.style.top = portraitHeight;
     //searchContainer.style.right = sectionWidth + ;
 
     ////////////
@@ -252,9 +262,9 @@ function createAndAppendSecondG(
 
     var textMonth = createSvgText(svgNs, 'rgb(78, 86, 95)', getCurrentMonthText())
     var textLess = createSvgText(svgNs, 'rgb(78, 86, 95)', 'Less');
-    var rect1 = createSvgRect(svgNs, cellWidth, cellHeight, 'rgb(198, 228, 139)');
-    var rect2 = createSvgRect(svgNs, cellWidth, cellHeight, 'rgb(123, 201, 111)');
-    var rect3 = createSvgRect(svgNs, cellWidth, cellHeight, 'rgb(25, 97, 39)');
+    var rect1 = createSvgRect(svgNs, cellWidth, cellHeight, 'rgb(235, 237, 240)');
+    var rect2 = createSvgRect(svgNs, cellWidth, cellHeight, 'rgb(198, 228, 139)');
+    var rect3 = createSvgRect(svgNs, cellWidth, cellHeight, 'rgb(123, 201, 111)');
     var textMore = createSvgText(svgNs, 'rgb(78, 86, 95)', 'More');
 
     gEle = document.createElementNS(svgNs, 'g');

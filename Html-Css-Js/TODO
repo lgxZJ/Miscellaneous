@@ -5,3 +5,4 @@
 4.  localStorage sessionStorage
 5.  worker.
 6.  change right slide to relative size;
+7.	postMessage iframe

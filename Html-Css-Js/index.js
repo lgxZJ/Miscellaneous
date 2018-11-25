@@ -1,3 +1,25 @@
+function onContentIframeLoad() {
+    var contentIframe = document.getElementById('content-iframe');
+    if (contentIframe === null) {
+        console.log('elemet `float-personal-block` not found!');
+        throw 'elemet `float-personal-block` not found!';
+    }
+
+    //contentIframe.contentWindow.postMessage("data", "file:///C:/Users/lgxZJ/Desktop/Miscellaneous/")
+    //todo:
+    return
+
+    const contentWidth = contentIframe.contentWindow.document.body.scrollWidth;
+    const contentHeight = contentIframe.contentWindow.document.body.scrollHeight;
+
+    contentIframe.style.width = contentWidth;
+    contentIframe.style.height = contentHeight;
+}
+
+window.addEventListener('message', function(event) {
+    this.console.log(event.origin, event.data, event.source)
+}, false)
+
 /////////////////////////////////////////////////////////////////////////////
 //      Global codes to be executed by documents which reference this js file.
 /////////////////////////////////////////////////////////////////////////////
@@ -99,6 +121,33 @@ document.addEventListener('DOMContentLoaded', function(event) {
     portrait.style.height = realHeight;
     portrait.style.borderRadius = realHeight + 'px';
     portrait.style.backgroundSize = realHeight + 'px';
+
+    ////
+
+    
+
+    const incrementStep = portraitHeight / 4 / 4;
+    console.log('increment step is:', incrementStep);
+    for (var i = 1; i < 5; ++i) {
+        realHeight += incrementStep;
+
+        var portraitBorder = document.getElementById('float-personal-block-portrait-border' + i);
+        if (portraitBorder === null) {
+            console.log('elemet `float-personal-block-portrait-border${i}` not found!');
+            return
+        }
+
+        portraitBorder.style.top = (portraitHeight - realHeight) / 2;
+        portraitBorder.style.right = (portraitWidth - realHeight) / 2;
+        portraitBorder.style.width = realHeight;
+        portraitBorder.style.height = realHeight;
+        portraitBorder.style.borderRadius = realHeight + 2 + 'px';
+        portraitBorder.style.zIndex = -i;
+
+        if (i != 0 || true) {
+            portraitBorder.style.animation = 'portrait-animation' + i + ' ' + 0.1 * 10 + 's linear ' + 0.1 * i * 2 + 's alternate infinite';
+        }
+    }
 
     ///////////
     var headerText = document.getElementById('header-text');

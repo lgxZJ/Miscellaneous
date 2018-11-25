@@ -266,7 +266,7 @@ body {
     width: 60pt;
     border-radius: 30pt;
     border-width: 1px;
-    border-color: rgb(235, 237, 240);
+    border-color: rgb(235, 235, 235);
     border-style: solid;
 
     margin: 0;
@@ -275,6 +275,96 @@ body {
     background-position: center;
     background-size: 60pt;
     background-repeat: no-repeat;
+}
+
+#float-personal-block-portrait-border1 {
+    position: fixed;
+
+    right: calc(80pt - 60pt / 2);
+    top: 0pt;
+
+    height: 60pt;
+    width: 60pt;
+    border-radius: 30pt;
+    border-width: 1px;
+    border-color: rgb(240, 240, 240);
+    border-style: solid;
+
+    margin: 0;
+    z-index: -1;
+}
+
+#float-personal-block-portrait-border2 {
+    position: fixed;
+
+    right: calc(80pt - 60pt / 2);
+    top: 0pt;
+
+    height: 60pt;
+    width: 60pt;
+    border-radius: 30pt;
+    border-width: 1px;
+    border-color: rgb(245, 245, 245);
+    border-style: solid;
+
+    margin: 0;
+    z-index: -1;
+}
+#float-personal-block-portrait-border3 {
+    position: fixed;
+
+    right: calc(80pt - 60pt / 2);
+    top: 0pt;
+
+    height: 60pt;
+    width: 60pt;
+    border-radius: 30pt;
+    border-width: 1px;
+    border-color: rgb(250, 250, 250);
+    border-style: solid;
+
+    margin: 0;
+    z-index: -1;
+}
+#float-personal-block-portrait-border4 {
+    position: fixed;
+
+    right: calc(80pt - 60pt / 2);
+    top: 0pt;
+
+    height: 60pt;
+    width: 60pt;
+    border-radius: 30pt;
+    border-width: 1px;
+    border-color: rgb(255, 255, 255);
+    border-style: solid;
+
+    margin: 0;
+    z-index: -1;
+}
+
+@keyframes portrait-animation1 {
+    0% { border-color: rgb(103, 175, 254); }
+    25% { border-color: rgb(240, 240, 240); }
+    100% { border-color: rgb(240, 240, 240); }
+}
+@keyframes portrait-animation2 {
+    
+    0% { border-color: rgb(158, 190, 254); }
+    25% { border-color: rgb(245, 245, 245); }
+    100% { border-color: rgb(245, 245, 245); }
+}
+@keyframes portrait-animation3 {
+    
+    0% { border-color: rgb(200, 220, 254); }
+    25% { border-color: rgb(250, 250, 250); }
+    100% { border-color: rgb(250, 250, 250); }
+}
+@keyframes portrait-animation4 {
+    
+    0% { border-color: rgb(253, 241, 254); }
+    25% { border-color: rgb(255, 255, 255); }
+    100% { border-color: rgb(255, 255, 255); }
 }
 
 #float-personal-block-portrait-beneth {
@@ -335,8 +425,12 @@ footer {
 
 /*********************************************/
 iframe {
-    width: 1000;
-    height: 4400;
+    /* arbitrary init value */
+    width: 600;
+    height: 1000;
 
     border: none;
+
+    /* first hidden, make it visible only after the iframes are loaded */
+    /* visibility: visible; */
 }

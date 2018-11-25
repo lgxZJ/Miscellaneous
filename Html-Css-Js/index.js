@@ -5,26 +5,56 @@ function onContentIframeLoad() {
         throw 'elemet `float-personal-block` not found!';
     }
 
-    //contentIframe.contentWindow.postMessage("data", "file:///C:/Users/lgxZJ/Desktop/Miscellaneous/")
-    //todo:
-    return
-
+    // make the iframe document fit to its content size
     const contentWidth = contentIframe.contentWindow.document.body.scrollWidth;
     const contentHeight = contentIframe.contentWindow.document.body.scrollHeight;
 
     contentIframe.style.width = contentWidth;
     contentIframe.style.height = contentHeight;
+
+    //	post to iframe to make it leave personal block at right.
+    var realWidth = document.body.clientWidth / 5.0 * 4;
+    contentIframe.contentWindow.postMessage('action.leave-personal-block=' + realWidth, 'http://47.98.116.187');
 }
 
 window.addEventListener('message', function(event) {
-    this.console.log(event.origin, event.data, event.source)
-}, false)
+    if (event.data === 'reply.leave-personal-block') {
+	var contentIframe = document.getElementById('content-iframe');
+	if (contentIframe === null) {
+            console.log('elemet `float-personal-block` not found!');
+            throw 'elemet `float-personal-block` not found!';
+	}
+
+	contentIframe.style.visibility = 'visible';
+    }
+
+    this.console.log('msg received in parent window', event.origin, event.data, event.source)
+}, false);
+
+window.addEventListener('resize', function() {
+    console.log('resize event in parent');
+
+    // location.reload() will cause a nginx load balane, we refresh manully here
+    layoutLoader();
+    window.location.reload();
+    //onContentIframeLoad();
+}, false);
 
 /////////////////////////////////////////////////////////////////////////////
 //      Global codes to be executed by documents which reference this js file.
 /////////////////////////////////////////////////////////////////////////////
-document.addEventListener('DOMContentLoaded', function(event) {
+function layoutLoader(event) {
     console.log('DOMContentLoaded');
+
+    //first hidden
+    var contentIframe = document.getElementById('content-iframe');
+    if (contentIframe === null) {
+        console.log('elemet `float-personal-block` not found!');
+        throw 'elemet `float-personal-block` not found!';
+    }
+    contentIframe.style.visibility = 'hidden';
+    contentIframe.src = contentIframe.src;
+    ////
 
     var documentHeight = document.body.clientHeight;
     var documentWidth = document.body.clientWidth;
@@ -124,8 +154,6 @@ document.addEventListener('DOMContentLoaded', function(event) {
 
     ////
 
-    
-
     const incrementStep = portraitHeight / 4 / 4;
     console.log('increment step is:', incrementStep);
     for (var i = 1; i < 5; ++i) {
@@ -198,10 +226,25 @@ document.addEventListener('DOMContentLoaded', function(event) {
         return
     }
 
+    var searchInputPadding = function() {
+        var searchInput = document.getElementById('search-input');
+        if (searchInput === null) {
+            console.log('the count of search-button elements not found');
+            return
+        }
+
+        var style = window.getComputedStyle(document.getElementById("search-input"), null);
+        return parseFloat(style.getPropertyValue("padding"));
+    }()
+
     for (var i = 0; i < navButtons.length; ++i) {
         navButtons[i].style.height = sectionHeight;
         navButtons[i].style.lineHeight = sectionHeight + 'px';
-        navButtons[i].style.fontSize = sectionHeight / 3 + 'px';
+        navButtons[i].style.fontSize = sectionHeight / 4 + 'px';
+
+        //todo:
+        //  minus the section width, search input width, search button width
+        navButtons[i].style.width = (documentWidth - sectionWidth - sectionHeight / 3 * 2 - sectionWidth) / 6;
     }
 
     ////
@@ -268,7 +311,8 @@ document.addEventListener('DOMContentLoaded', function(event) {
     createAndAppendFirstG(portraitWidth, svg, svgNamespace, cellCountX, cellCountY);
     createAndAppendSecondG(floatPersonalBlock, svgNamespace, svg, portraitWidth, cellCountX, cellCountY);
     floatPersonalBlock.appendChild(svg);
-});
+};
+document.addEventListener('DOMContentLoaded', layoutLoader, false);
 
 function createAndAppendFirstG( portraitWidth, svgElement, svgNs, cellCountX, cellCountY) {
     var gEle = document.createElementNS(svgNs, 'g');

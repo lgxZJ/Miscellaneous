@@ -1,3 +1,46 @@
+<script>
+
+  window.addEventListener('load', function(event){
+    console.log('load', JSON.stringify(event));
+
+  // leave a right empty block for float personal block
+  /*
+  window.parent.document.getElementById('content-iframe').width = document.body.scrollWidth;
+  window.parent.document.getElementById('content-iframe').height = document.body.scrollHeight;
+  */
+  }, false);
+
+  window.addEventListener('resize', function(event) {
+    console.log('resize event', event);
+  }, false);
+
+  window.addEventListener('message', function(event) {
+    if (event.data === null || event.data === undefined) {
+      console.log('event.data is null or undfeined')
+      return
+    }
+
+  var results = event.data.split('=');
+  if (results.length != 2) {
+    console.log('event.data is not separated by = char, data:', event.data)
+    return
+  }
+
+  if (results[0] === 'action.leave-personal-block') {
+    console.log('action received: ', event.data)
+
+    document.body.style.width = results[1] - 2;
+    window.parent.postMessage('reply.leave-personal-block', 'http://47.98.116.187');
+  }
+
+    console.log('msg received in child window', event.origin, event.data, event.source)
+  }, false);
+
+</script>
+<head>
+<meta charset="UTF-8">
+</head>
+<body>
 <p>DirectSound对于<strong>单声道</strong>的Wav文件（或者说对于单声道的PCM音频数据）提供了内置3D音效的模拟，你能够控制每一个声源和收听者的立体位置，对移动的物体应用多普勒效果等等。在单个应用程序中，可以有多个声源，但是只能有一个收听者。</p>
 <h2 id="d音效概念简介">1. 3D音效概念简介</h2>
 <ol type="1">
@@ -78,3 +121,4 @@ void MainWindow::on_coneOrientationX_valueChanged(int value)
 <p>界面太大，我就分成3张图展示了：</p>
 <p><img src="https://i.loli.net/2018/03/10/5aa3cdbe2b24b.png" alt="reuslt-pic1" /> <img src="https://i.loli.net/2018/03/10/5aa3cdcd04062.png" alt="reuslt-pic2" /> <img src="https://i.loli.net/2018/03/10/5aa3cdd8a1168.png" alt="reuslt-pic3" /></p>
 <p>完整代码见<a href="https://github.com/lgxZJ/Miscellaneous/tree/master/Audio/DirectSoundPlay">链接</a>。</p>
+</body>

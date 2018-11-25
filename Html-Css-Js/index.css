@@ -59,6 +59,9 @@ nav ul li {
     border: 0px solid black;
 
     margin: 0 4pt;
+    text-align: center;
+    /* margin-left: auto;
+    margin-right: auto; */
     padding: 0 6pt;
 
     color: rgb(126, 126, 126);

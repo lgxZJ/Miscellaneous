@@ -6,3 +6,5 @@
 5.  worker.
 6.  change right slide to relative size;
 7.	postMessage iframe
+8.  导航栏大小及位置。
+9.  iframe resize问题。

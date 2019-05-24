@@ -132,6 +132,7 @@ There are two things you can do about this warning:
 (global-set-key (kbd "M-,") 'godef-jump)         ; Go to definition
 (global-set-key (kbd "M-.") 'pop-tag-mark)       ; Return from whence you came
 (global-set-key (kbd "M-/") 'compile)            ; Invoke compiler
+(global-set-key (kbd "M-i") 'ztree-dir)          ; Invoke ztree-dir
 
 (load-theme 'atom-dark t)
 

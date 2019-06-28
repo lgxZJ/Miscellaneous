@@ -40,6 +40,9 @@ cat >> ~/.bashrc << EOF
 PATH=$PATH:/usr/local/emacs
 EOF
 
+# Change emacs to ems to avoid conflicts of other possibly installed emacs
+mv /usr/local/emacs/emacs /usr/local/emacs/ems
+
 # Go get [gocode, godef]
 go get -u github.com/rogpeppe/godef
 go get -u github.com/nsf/gocode

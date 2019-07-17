@@ -139,6 +139,6 @@ There are two things you can do about this warning:
 (global-set-key (kbd "M-/") 'compile)            ; Invoke compiler
 (global-set-key (kbd "M-i") 'ztree-dir)          ; Invoke ztree-dir
 
-(load-theme 'atom-dark t)
+(load-theme 'tsdh-dark t)
 
 EOF

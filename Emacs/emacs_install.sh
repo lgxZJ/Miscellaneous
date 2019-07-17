@@ -6,10 +6,11 @@ fi
 
 # Remove possibly already installed emacs versions
 # Remove possibly installed emacs
-rm -rf /usr/local/emacs
+rm -rf /usr/local/lgx-emacs
 rm -rf ~/.emacs.d
 
 # Make dir for emacs auto-build process
+cd /tmp
 rm -rf lgx
 mkdir -p lgx
 cd lgx
@@ -26,7 +27,7 @@ yum install gnutls gnutls-devel ncurses ncurses-devel -y
 # Build emacs
 ./configure
 make
-make install bindir=/usr/local/emacs
+make install bindir=/usr/local/lgx-emacs
 make clean
 make distclean
 cd ..
@@ -37,11 +38,11 @@ if [ ! -f ~/.bashrc ]; then
 fi
 
 cat >> ~/.bashrc << EOF
-PATH=$PATH:/usr/local/emacs
+PATH=$PATH:/usr/local/lgx-emacs
 EOF
 
 # Change emacs to ems to avoid conflicts of other possibly installed emacs
-mv /usr/local/emacs/emacs /usr/local/emacs/ems
+mv /usr/local/lgx-emacs/emacs /usr/local/lgx-emacs/ems
 
 # Go get [gocode, godef]
 go get -u github.com/rogpeppe/godef
@@ -49,6 +50,7 @@ go get -u github.com/nsf/gocode
 
 # Compile [guru, goimports] from source
 git clone https://github.com/golang/tools.git
+mkdir -p $GOPATH/src/golang.org/x/tools
 \cp -rf tools/* $GOPATH/src/golang.org/x/tools/
 
 cd $GOPATH/src/golang.org/x/tools/cmd/guru/

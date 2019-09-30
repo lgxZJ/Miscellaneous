@@ -9,19 +9,25 @@ def parse_one_line(line):
 
     for one_pair in pairs:
         key_value = one_pair.split(':')
+
+        sys.stderr.write(key_value[0])
+        sys.stderr.write(':')
+        sys.stderr.write(key_value[1])
+        
+
         if (key_value[0] == "len"):
             payload = sys.stdin.read(int(key_value[1]))
 
             if (len(payload) != int(key_value[1])):
                 raise Exception('payload size expected and got not equals')
 
+            sys.stderr.write('(payload:')
             sys.stderr.write(payload)
-
-        sys.stderr.write(key_value[0])
-        sys.stderr.write(':')
-        sys.stderr.write(key_value[1])
-        sys.stderr.flush()
+            sys.stderr.write(')')
     
+        sys.stderr.write(' ')
+        sys.stderr.flush()
+
     sys.stderr.write('\n\n')
     sys.stderr.flush()
 
